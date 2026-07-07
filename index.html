@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sentinel SOC &amp; Security Briefs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a1120; --bg-2:#0e1626; --panel:#131d31; --panel-2:#16223a;
+    --line:#22314e; --line-soft:#1a2740;
+    --ink:#e7eefb; --ink-2:#9fb0cf; --ink-3:#6b7d9e;
+    --cyan:#37cbd6; --cyan-dim:#1f6d78; --amber:#f0a93b;
+    --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+    --sans:"Space Grotesk",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:
+      radial-gradient(1100px 500px at 82% -8%, rgba(55,203,214,.10), transparent 60%),
+      var(--bg);
+    color:var(--ink);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:820px;margin:0 auto;padding:0 22px 90px}
+  .badge{font-family:var(--mono);font-size:12.5px;color:var(--cyan);
+    border-bottom:1px solid var(--line-soft);padding:20px 0 14px;
+    display:flex;gap:18px;align-items:baseline;flex-wrap:wrap}
+  .badge .dot{width:8px;height:8px;border-radius:50%;background:var(--cyan);
+    box-shadow:0 0 0 3px rgba(55,203,214,.18);display:inline-block;margin-right:8px;
+    animation:pulse 2.6s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .badge b{color:var(--ink)}
+  header{padding:38px 0 10px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-3)}
+  h1{font-size:clamp(28px,5vw,44px);line-height:1.05;font-weight:700;margin:14px 0 0;letter-spacing:-.015em}
+  h1 .accent{color:var(--cyan)}
+  .sub{color:var(--ink-2);margin-top:14px;max-width:60ch}
+  .sec{margin:44px 0 8px;display:flex;align-items:baseline;gap:14px}
+  .sec h2{font-size:15px;font-weight:600;margin:0;font-family:var(--mono);
+    letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+  .sec .rule{flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+  .list{display:grid;gap:12px;margin-top:16px}
+  a.item{display:grid;grid-template-columns:120px 1fr auto;gap:16px;align-items:baseline;
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:18px 20px;text-decoration:none;color:var(--ink);transition:.18s}
+  a.item:hover{border-color:var(--cyan-dim);background:var(--panel-2);transform:translateY(-1px)}
+  .item .date{font-family:var(--mono);font-size:12.5px;color:var(--amber)}
+  .item .title{font-size:15.5px;font-weight:600}
+  .item .title small{display:block;font-weight:400;color:var(--ink-2);font-size:13px;margin-top:3px}
+  .item .kind{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-3);border:1px solid var(--line);border-radius:3px;padding:2px 8px}
+  footer{margin-top:56px;border-top:1px solid var(--line);padding-top:22px;
+    font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+  @media (max-width:560px){a.item{grid-template-columns:1fr;gap:6px}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="badge">
+    <span><span class="dot"></span><b>Sentinel</b> · SOC &amp; Security Briefs</span>
+  </div>
+
+  <header>
+    <div class="eyebrow">Archive</div>
+    <h1>Microsoft Sentinel<br><span class="accent">operations briefs.</span></h1>
+    <p class="sub">Weekly and monthly digests of Microsoft Sentinel, Defender-portal migration,
+      and SOC-relevant platform changes. Sourced from first-party Microsoft channels and
+      practitioner analysis; all claims link back to the original source.</p>
+  </header>
+
+  <div class="sec"><h2>2026</h2><span class="rule"></span></div>
+
+  <div class="list">
+    <!-- newest first; the weekly task prepends new entries here -->
+    <a class="item" href="briefs/sentinel-soc-security-weekly-2026-06-29.html">
+      <span class="date">29 Jun – 06 Jul</span>
+      <span class="title">The week the July 1 changes went live
+        <small>Account-entity naming enforcement · AgentsInfo cutoff · detections-as-code GA</small></span>
+      <span class="kind">weekly</span>
+    </a>
+    <a class="item" href="briefs/sentinel-soc-security-brief-2026-07-07.html">
+      <span class="date">07 Jun – 07 Jul</span>
+      <span class="title">What changed in Sentinel this cycle
+        <small>Agentic-SOC build-out · Defender-portal cutover dates · STIX export · UEBA</small></span>
+      <span class="kind">monthly</span>
+    </a>
+  </div>
+
+  <footer>updated 2026-07-07</footer>
+
+</div>
+</body>
+</html>
