@@ -1,4 +1,4 @@
-# sentinel-briefs
+# soc-brief
 
 Static archive of Microsoft Sentinel SOC/Security briefs, published via Cloudflare Pages.
 
