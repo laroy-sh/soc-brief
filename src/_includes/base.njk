@@ -26,7 +26,10 @@
     <div class="masthead__inner">
       <a class="brand" href="/">
         <span class="brand__dot" aria-hidden="true"></span>
-        <span class="brand__name">{{ site.title }}</span>
+        <span class="brand__text">
+          <span class="brand__name">{{ site.title }}</span>
+          <span class="brand__tagline">{{ site.tagline }}</span>
+        </span>
       </a>
       <nav class="nav" aria-label="Primary">
         <a href="/">Home</a>
@@ -38,9 +41,6 @@
   </header>
 
   <main id="main" class="main">
-    <section class="home-intro">
-      <p class="eyebrow">{{ site.tagline }}</p>
-    </section>
     {{ content | safe }}
   </main>
 
