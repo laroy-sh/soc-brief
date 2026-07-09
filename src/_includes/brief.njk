@@ -9,7 +9,7 @@ layout: base.njk
     <h1 class="brief__title">{{ title }}</h1>
     {% if topics %}
     <ul class="tags brief__tags">
-      {% for t in topics %}<li class="tag">{{ t }}</li>{% endfor %}
+      {% for t in topics %}<li class="tag"><a href="/topics/{{ t | topicSlug }}/">{{ t }}</a></li>{% endfor %}
     </ul>
     {% endif %}
   </header>

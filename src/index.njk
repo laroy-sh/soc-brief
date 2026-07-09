@@ -12,7 +12,7 @@ layout: base.njk
         <h1 class="brief__title">{{ lead.data.title }}</h1>
         {% if lead.data.topics %}
         <ul class="tags brief__tags">
-          {% for t in lead.data.topics %}<li class="tag">{{ t }}</li>{% endfor %}
+          {% for t in lead.data.topics %}<li class="tag"><a href="/topics/{{ t | topicSlug }}/">{{ t }}</a></li>{% endfor %}
         </ul>
         {% endif %}
       </header>
@@ -34,6 +34,8 @@ layout: base.njk
 
     {% include "calendar.njk" %}
   </div>
+
+  {% include "tagcloud.njk" %}
 {% else %}
   <p class="empty">No issues published yet — the first lands soon.</p>
 {% endif %}

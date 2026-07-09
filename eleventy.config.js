@@ -57,6 +57,9 @@ export default function (eleventyConfig) {
   eleventyConfig.addFilter("isoDate", (value) => new Date(value).toISOString().slice(0, 10));
   eleventyConfig.addFilter("isoWeek", (value) => briefWeekParts(new Date(value)).week);
   eleventyConfig.addFilter("pad2", (n) => String(n).padStart(2, "0"));
+  // Topic → URL slug. "Defender XDR" → "defender-xdr", "MS365" → "ms365".
+  eleventyConfig.addFilter("topicSlug", (s) =>
+    String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""));
   eleventyConfig.addFilter("adjacentBrief", (url, briefs, direction) => {
     const idx = briefs.findIndex((b) => b.url === url);
     if (idx === -1) return null;
@@ -94,6 +97,21 @@ export default function (eleventyConfig) {
   eleventyConfig.addFilter("readingTime", (html) => {
     const words = (String(html).replace(/<[^>]+>/g, " ").match(/\S+/g) || []).length;
     return Math.max(1, Math.round(words / 200));
+  });
+
+  // Unique topics across all issues, with the issues carrying each — drives the
+  // tag cloud and the per-topic pages. Sorted by frequency, then name.
+  eleventyConfig.addCollection("topicsList", (api) => {
+    const briefs = api.getFilteredByTag("brief");
+    const map = {};
+    for (const b of briefs) {
+      for (const t of b.data.topics || []) {
+        (map[t] ||= []).push(b);
+      }
+    }
+    return Object.entries(map)
+      .map(([name, items]) => ({ name, count: items.length, items }))
+      .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
   });
 
   // Build a per-year calendar: every Monday issue week in the calendar year,
