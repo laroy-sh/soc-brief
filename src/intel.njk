@@ -1,0 +1,51 @@
+---
+layout: base.njk
+title: "Threat Intelligence"
+description: "Live threat-intelligence dashboards — threat activity, CVE intelligence, MITRE ATT&CK, victims, and ransomware groups — embedded for the SOC."
+permalink: /intel/
+---
+<div class="intel">
+  <p class="eyebrow"><a class="backlink" href="/">← Home</a></p>
+  <h1 class="brief__title">Threat Intelligence</h1>
+  <p class="intel__note">Live dashboards embedded from ransomware.abrandao.net — external content, refreshed at the source.</p>
+
+  <div class="intel__tabs" role="tablist" aria-label="Threat intelligence dashboards">
+    <button class="intel__tab is-active" type="button" data-panel="threat">Threat Intel</button>
+    <button class="intel__tab" type="button" data-panel="cve">CVE Intelligence</button>
+    <button class="intel__tab" type="button" data-panel="mitre">MITRE ATT&amp;CK</button>
+    <button class="intel__tab" type="button" data-panel="victims">Victims</button>
+    <button class="intel__tab" type="button" data-panel="groups">Ransomware Groups</button>
+  </div>
+
+  <div class="intel__panels">
+    <div class="embedded-dashboard intel__panel is-active" data-panel="threat">
+      <iframe src="https://ransomware.abrandao.net/threat_dashboard.html" title="Threat Intelligence Dashboard" loading="lazy"></iframe>
+    </div>
+    <div class="embedded-dashboard intel__panel" data-panel="cve">
+      <iframe src="https://ransomware.abrandao.net/intel_dashboard.html" title="CVE Intelligence Dashboard" loading="lazy"></iframe>
+    </div>
+    <div class="embedded-dashboard intel__panel" data-panel="mitre">
+      <iframe src="https://ransomware.abrandao.net/mitre_attack_dashboard.html" title="MITRE ATT&amp;CK Enterprise" loading="lazy"></iframe>
+    </div>
+    <div class="embedded-dashboard intel__panel" data-panel="victims">
+      <iframe src="https://ransomware.abrandao.net/victims_dashboard.html" title="Victims Dashboard" loading="lazy"></iframe>
+    </div>
+    <div class="embedded-dashboard intel__panel" data-panel="groups">
+      <iframe src="https://ransomware.abrandao.net/groups_dashboard.html" title="Ransomware Groups Monitoring" loading="lazy"></iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var tabs = document.querySelectorAll(".intel__tab");
+    var panels = document.querySelectorAll(".intel__panel");
+    tabs.forEach(function (t) {
+      t.addEventListener("click", function () {
+        var p = t.dataset.panel;
+        tabs.forEach(function (x) { x.classList.toggle("is-active", x === t); });
+        panels.forEach(function (x) { x.classList.toggle("is-active", x.dataset.panel === p); });
+      });
+    });
+  })();
+</script>
