@@ -86,6 +86,13 @@ Hard rules: every item traces to a fetched page with a real in-window date; one
 item appears in exactly one issue; the markdown body is not run through a
 template engine, so KQL braces `{ }` are safe.
 
+**NO BOLD.** Never use `**bold**` in the body. The ONLY allowed bold is the
+leading deadline date in an "## Act by" bullet — e.g. `- **1 Jul 2026** — …`.
+Do NOT bold item lead-ins, product/feature names, CVE IDs, rollout dates, or
+anything in "## What changed" or "## Worth knowing". Section headings are `##`
+(not bold). This is a hard, non-negotiable author preference — bold anywhere
+else is a defect.
+
 ## Staged plan (doc → skill)
 
 1. **Now** — this doc is the standard; the Jan–Jul 2026 backfill was generated
