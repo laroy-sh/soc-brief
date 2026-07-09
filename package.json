@@ -8,7 +8,8 @@
     "build": "eleventy",
     "serve": "eleventy --serve",
     "clean": "rm -rf _site",
-    "deploy": "npm run clean && npm run build && wrangler pages deploy _site --project-name soc-brief"
+    "deploy": "npm run clean && npm run build && npx wrangler pages deploy _site --project-name soc-brief --branch main",
+    "deploy:preview": "npm run clean && npm run build && npx wrangler pages deploy _site --project-name soc-brief --branch review"
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.1.6",
