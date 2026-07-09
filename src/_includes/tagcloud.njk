@@ -3,7 +3,7 @@
   <ul class="tagcloud__list">
     {% for t in collections.topicsList %}
     <li>
-      <a class="tagcloud__tag" href="/topics/{{ t.name | topicSlug }}/" style="--n: {{ t.count }}"
+      <a class="tagcloud__tag" href="/topics/{{ t.name | topicSlug }}/"
          title="{{ t.count }} issue{% if t.count != 1 %}s{% endif %}">
         {{ t.name }}<span class="tagcloud__count">{{ t.count }}</span>
       </a>
