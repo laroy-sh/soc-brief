@@ -79,7 +79,8 @@ threat research, Patch Tuesday relevant to a Microsoft estate). Same link rule.
 
 Topics tag vocabulary: Sentinel, Defender XDR, MDE, MDO, MDC, MDI, Entra ID,
 KQL, Defender portal, UEBA, SOAR, Threat intel, Exposure management, Security
-Copilot, Purview.
+Copilot, Purview, MS365. (Use MS365 for Microsoft 365 platform features — Teams,
+Exchange Online, M365 Copilot, SharePoint — not for the Defender workloads.)
 
 Hard rules: every item traces to a fetched page with a real in-window date; one
 item appears in exactly one issue; the markdown body is not run through a

@@ -1,0 +1,13 @@
+<section class="tagcloud" aria-label="Browse issues by topic">
+  <h2 class="section-label">Browse by topic</h2>
+  <ul class="tagcloud__list">
+    {% for t in collections.topicsList %}
+    <li>
+      <a class="tagcloud__tag" href="/topics/{{ t.name | topicSlug }}/" style="--n: {{ t.count }}"
+         title="{{ t.count }} issue{% if t.count != 1 %}s{% endif %}">
+        {{ t.name }}<span class="tagcloud__count">{{ t.count }}</span>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+</section>

@@ -1,0 +1,29 @@
+---
+layout: base.njk
+pagination:
+  data: collections.topicsList
+  size: 1
+  alias: topic
+permalink: "/topics/{{ topic.name | topicSlug }}/"
+eleventyComputed:
+  title: "Topic · {{ topic.name }}"
+  description: "Every SOC Weekly Brief issue tagged {{ topic.name }}."
+---
+<div class="topic-page">
+  <p class="eyebrow"><a class="backlink" href="/">← Home</a></p>
+  <h1 class="brief__title">{{ topic.name }}</h1>
+  <p class="topic-count">{{ topic.count }} issue{% if topic.count != 1 %}s{% endif %} tagged this topic.</p>
+
+  <ul class="issue-list">
+    {% for b in topic.items | reverse %}
+    <li class="issue-list__item">
+      <a href="{{ b.url }}">
+        <span class="issue-list__week">Week {{ b.date | isoWeek }}</span>
+        <span class="issue-list__title">{{ b.data.title }}</span>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+
+  {% include "tagcloud.njk" %}
+</div>
