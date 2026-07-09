@@ -1,0 +1,9 @@
+{
+  "title": "SOC Weekly Brief",
+  "tagline": "The week in the Microsoft security stack, distilled",
+  "description": "A weekly read on what's new across Microsoft Sentinel, Defender, and Entra — distilled for SOC analysts.",
+  "url": "https://soc-brief.pages.dev",
+  "author": "Laroy Shtotland",
+  "linkedin": "https://www.linkedin.com/in/laroy/",
+  "kicker": "Sentinel · Defender · Entra"
+}

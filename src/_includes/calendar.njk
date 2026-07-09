@@ -1,0 +1,19 @@
+<aside class="home-aside">
+  {% for yr in collections.calendars %}
+  <section class="cal-year reveal" style="--i: 1">
+    <h2 class="section-label">Browse · {{ yr.year }}</h2>
+    <ol class="calendar" aria-label="{{ yr.year }} issue calendar">
+      {% for c in yr.weeks %}
+        {% if c.hasBrief %}
+        <li class="cal-cell cal-cell--brief">
+          <a href="{{ c.url }}" aria-label="Week {{ c.week }}: {{ c.title }}" title="Week {{ c.week }} · {{ c.title }} — {{ c.topics | join(', ') }}">{{ c.week | pad2 }}</a>
+        </li>
+        {% else %}
+        <li class="cal-cell{% if c.isCurrent %} cal-cell--current{% endif %}{% if c.isFuture %} cal-cell--future{% endif %}" aria-hidden="true">{{ c.week | pad2 }}</li>
+        {% endif %}
+      {% endfor %}
+    </ol>
+  </section>
+  {% endfor %}
+  <p class="cal-legend"><span class="cal-legend__swatch" aria-hidden="true"></span> Filled weeks are published issues.</p>
+</aside>

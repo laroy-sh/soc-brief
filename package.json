@@ -1,0 +1,17 @@
+{
+  "name": "soc-brief",
+  "version": "1.0.0",
+  "description": "SOC Weekly Brief — a small static site for soc-brief.pages.dev",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "eleventy",
+    "serve": "eleventy --serve",
+    "clean": "rm -rf _site",
+    "deploy": "wrangler pages deploy _site --project-name soc-brief"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.6",
+    "@11ty/eleventy-plugin-rss": "^3.0.0"
+  }
+}

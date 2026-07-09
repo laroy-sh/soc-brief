@@ -1,0 +1,42 @@
+---
+layout: base.njk
+---
+<div class="home-grid">
+  <article class="brief">
+  <header class="brief__head">
+    <p class="eyebrow"><a class="backlink" href="/">← Home</a></p>
+    <p class="brief__kicker">Week {{ date | isoWeek }} · {{ content | readingTime }} min read</p>
+    <h1 class="brief__title">{{ title }}</h1>
+    {% if topics %}
+    <ul class="tags brief__tags">
+      {% for t in topics %}<li class="tag">{{ t }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+  </header>
+
+  <div class="prose brief__items">
+    {{ content | safe }}
+  </div>
+
+  <footer class="brief__foot">
+    {% set previousBrief = page.url | adjacentBrief(collections.brief, -1) %}
+    {% set nextBrief = page.url | adjacentBrief(collections.brief, 1) %}
+    <nav class="brief-nav" aria-label="Issue navigation">
+      {% if previousBrief %}
+      <a class="brief-nav__link brief-nav__link--prev" href="{{ previousBrief.url }}" title="Previous week: {{ previousBrief.data.title }}">
+        <span class="brief-nav__arrow" aria-hidden="true">←</span>
+        <span class="brief-nav__label">Week {{ previousBrief.date | isoWeek }} · {{ previousBrief.data.title | navRange }}</span>
+      </a>
+      {% endif %}
+      {% if nextBrief %}
+      <a class="brief-nav__link brief-nav__link--next" href="{{ nextBrief.url }}" title="Next week: {{ nextBrief.data.title }}">
+        <span class="brief-nav__label">Week {{ nextBrief.date | isoWeek }} · {{ nextBrief.data.title | navRange }}</span>
+        <span class="brief-nav__arrow" aria-hidden="true">→</span>
+      </a>
+      {% endif %}
+    </nav>
+  </footer>
+  </article>
+
+  {% include "calendar.njk" %}
+</div>

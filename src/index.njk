@@ -1,0 +1,39 @@
+---
+layout: base.njk
+---
+{% set briefs = collections.brief | reverse %}
+{% if briefs.length %}
+  {% set lead = briefs[0] %}
+
+  <div class="home-grid">
+    <article class="brief brief--home reveal" style="--i: 0">
+      <header class="brief__head">
+        <p class="brief__kicker">Latest issue · Week {{ lead.date | isoWeek }} · {{ lead.templateContent | readingTime }} min read</p>
+        <h1 class="brief__title">{{ lead.data.title }}</h1>
+        {% if lead.data.topics %}
+        <ul class="tags brief__tags">
+          {% for t in lead.data.topics %}<li class="tag">{{ t }}</li>{% endfor %}
+        </ul>
+        {% endif %}
+      </header>
+      <div class="prose brief__items">
+        {{ lead.templateContent | safe }}
+      </div>
+      <footer class="brief__foot">
+        {% set previousBrief = lead.url | adjacentBrief(collections.brief, -1) %}
+        <nav class="brief-nav" aria-label="Issue navigation">
+          {% if previousBrief %}
+          <a class="brief-nav__link brief-nav__link--prev" href="{{ previousBrief.url }}" title="Previous week: {{ previousBrief.data.title }}">
+            <span class="brief-nav__arrow" aria-hidden="true">←</span>
+            <span class="brief-nav__label">Week {{ previousBrief.date | isoWeek }} · {{ previousBrief.data.title | navRange }}</span>
+          </a>
+          {% endif %}
+        </nav>
+      </footer>
+    </article>
+
+    {% include "calendar.njk" %}
+  </div>
+{% else %}
+  <p class="empty">No issues published yet — the first lands soon.</p>
+{% endif %}

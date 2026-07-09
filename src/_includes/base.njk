@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if title %}{{ title }} · {{ site.title }}{% else %}{{ site.title }} — {{ site.tagline }}{% endif %}</title>
+  <meta name="description" content="{{ description or site.description }}">
+  <link rel="canonical" href="{{ site.url }}{{ page.url }}">
+  <link rel="alternate" type="application/atom+xml" title="{{ site.title }}" href="{{ site.url }}/feed.xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="{{ site.title }}">
+  <meta property="og:title" content="{% if title %}{{ title }} · {{ site.title }}{% else %}{{ site.title }}{% endif %}">
+  <meta property="og:description" content="{{ description or site.description }}">
+  <meta property="og:url" content="{{ site.url }}{{ page.url }}">
+  <meta name="twitter:card" content="summary">
+  <meta name="theme-color" content="#0a1120">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css?v={{ assets.cssVersion }}">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="masthead">
+    <div class="masthead__inner">
+      <a class="brand" href="/">
+        <span class="brand__dot" aria-hidden="true"></span>
+        <span class="brand__name">{{ site.title }}</span>
+        <span class="brand__kicker">{{ site.kicker }}</span>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/feed.xml">Feed</a>
+        <a href="{{ site.linkedin }}" target="_blank" rel="me noopener">LinkedIn<span class="nav__ext" aria-hidden="true">↗</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="main">
+    <section class="home-intro">
+      <p class="eyebrow">{{ site.tagline }}</p>
+    </section>
+    {{ content | safe }}
+  </main>
+
+  <footer class="site-foot">
+    <div class="site-foot__inner">
+      <p class="site-foot__brand">{{ site.title }}</p>
+      <p class="site-foot__fine">© {{ build.year }} {{ site.author }} · Sourced from first-party Microsoft channels; every claim links to its source. Not affiliated with Microsoft.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Terminal chrome + copy button on KQL/code blocks.
+      document.querySelectorAll(".prose pre").forEach(pre => {
+        const header = document.createElement("div");
+        header.className = "terminal-header";
+        const controls = document.createElement("div");
+        controls.className = "terminal-controls";
+        controls.innerHTML = '<span class="dot dot--red"></span><span class="dot dot--yellow"></span><span class="dot dot--green"></span>';
+        const title = document.createElement("span");
+        title.className = "terminal-title";
+        title.textContent = "kql";
+        const copyBtn = document.createElement("button");
+        copyBtn.className = "copy-btn";
+        copyBtn.type = "button";
+        copyBtn.setAttribute("aria-label", "Copy code");
+        copyBtn.innerHTML = '<span>Copy</span>';
+        header.appendChild(controls);
+        header.appendChild(title);
+        header.appendChild(copyBtn);
+        pre.insertBefore(header, pre.firstChild);
+        copyBtn.addEventListener("click", () => {
+          const codeEl = pre.querySelector("code");
+          if (!codeEl) return;
+          navigator.clipboard.writeText(codeEl.innerText || codeEl.textContent).then(() => {
+            const span = copyBtn.querySelector("span");
+            span.textContent = "Copied!";
+            setTimeout(() => { span.textContent = "Copy"; }, 2000);
+          });
+        });
+      });
+    });
+  </script>
+</body>
+</html>
