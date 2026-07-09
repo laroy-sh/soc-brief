@@ -1,4 +1,5 @@
 <aside class="home-aside">
+  {% include "tagcloud.njk" %}
   {% for yr in collections.calendars %}
   <section class="cal-year reveal" style="--i: 1">
     <h2 class="section-label">Browse · {{ yr.year }}</h2>
