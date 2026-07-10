@@ -53,6 +53,11 @@ Month-context (detail; attach to the announcement week):
 - MDC release notes — https://learn.microsoft.com/en-us/azure/defender-for-cloud/release-notes
 - Entra what's new — https://learn.microsoft.com/en-us/entra/fundamentals/whats-new
 
+Curated roundup (discovery aid — a dated weekly digest; use it to catch items the
+first-party feeds buried, then cite the Microsoft primary source for each change,
+never the newsletter itself):
+- "THE PROMPT for Microsoft Security" (Rod Trent) — https://rodtrent.substack.com/s/the-prompt-for-microsoft-security (weekly). Moved here from microsoftdefender.substack.com, which stays up temporarily during the transition — check the new home first.
+
 ## File format
 
 ```
