@@ -57,6 +57,7 @@ Curated roundup (discovery aid — a dated weekly digest; use it to catch items 
 first-party feeds buried, then cite the Microsoft primary source for each change,
 never the newsletter itself):
 - "THE PROMPT for Microsoft Security" (Rod Trent) — https://rodtrent.substack.com/s/the-prompt-for-microsoft-security (weekly). Moved here from microsoftdefender.substack.com, which stays up temporarily during the transition — check the new home first.
+- David Alonso Dominguez (Microsoft, Senior Technical Security Specialist) — https://www.linkedin.com/in/david-alonso-dominguez/ (LinkedIn posts, no fixed cadence). Shares Defender XDR / Sentinel / advanced-hunting feature news; no newsletter of his own, so scan his recent posts. LinkedIn may require login — skip gracefully if unreachable.
 
 ## File format
 
