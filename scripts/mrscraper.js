@@ -64,7 +64,8 @@ export async function scrape(url, opts = {}) {
 }
 
 // CLI demo: node scripts/mrscraper.js <url> [--format markdown|html|screenshot|json] [--prompt "..."] [--geo DE] [--no-super] [--no-render]
-if (import.meta.url === `file://${process.argv[1]}`) {
+const { pathToFileURL } = await import("node:url");
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const { readFileSync, existsSync } = await import("node:fs");
   if (!process.env.MRSCRAPER_API_TOKEN && existsSync(new URL("../.env", import.meta.url))) {
     for (const line of readFileSync(new URL("../.env", import.meta.url), "utf8").split("\n")) {
