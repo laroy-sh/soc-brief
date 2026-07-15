@@ -57,7 +57,7 @@ Curated roundup (discovery aid — a dated weekly digest; use it to catch items 
 first-party feeds buried, then cite the Microsoft primary source for each change,
 never the newsletter itself):
 - "THE PROMPT for Microsoft Security" (Rod Trent) — https://rodtrent.substack.com/s/the-prompt-for-microsoft-security (weekly). Moved here from microsoftdefender.substack.com, which stays up temporarily during the transition — check the new home first.
-- David Alonso Dominguez (Microsoft, Senior Technical Security Specialist) — Sentinel/Defender XDR content, mostly on LinkedIn. Machine-fetchable channel: YouTube Atom feed https://www.youtube.com/feeds/videos.xml?channel_id=UC1IYsYLFOZxQrYD1Be-XIoA (plain XML, no auth). His LinkedIn (https://www.linkedin.com/in/david-alonso-dominguez/) and X (https://x.com/Davidal52214920) are behind auth walls — do not attempt to fetch them from the routine; use the YouTube feed only.
+- David Alonso Dominguez (Microsoft, Senior Technical Security Specialist) — Sentinel/Defender XDR content, mostly on LinkedIn. Machine-fetchable channel: YouTube Atom feed https://www.youtube.com/feeds/videos.xml?channel_id=UC1IYsYLFOZxQrYD1Be-XIoA (plain XML, no auth). His LinkedIn (https://www.linkedin.com/in/david-alonso-dominguez/) and X (https://x.com/Davidal52214920) are behind auth walls — plain fetches fail. If MRSCRAPER_API_TOKEN is set in the environment, fetch them via `npm run scrape -- <url>` (MrScraper unblocker, see scripts/mrscraper.js; add `--format json --prompt "list posts with date, text, links"` for structured output). Otherwise fall back to the YouTube feed only.
 
 ## File format
 
