@@ -57,7 +57,11 @@ Curated roundup (discovery aid — a dated weekly digest; use it to catch items 
 first-party feeds buried, then cite the Microsoft primary source for each change,
 never the newsletter itself):
 - "THE PROMPT for Microsoft Security" (Rod Trent) — https://rodtrent.substack.com/s/the-prompt-for-microsoft-security (weekly). Moved here from microsoftdefender.substack.com, which stays up temporarily during the transition — check the new home first.
-- David Alonso Dominguez (Microsoft, Senior Technical Security Specialist) — Sentinel/Defender XDR content, mostly on LinkedIn. Machine-fetchable channel: YouTube Atom feed https://www.youtube.com/feeds/videos.xml?channel_id=UC1IYsYLFOZxQrYD1Be-XIoA (plain XML, no auth). His LinkedIn is behind an auth wall — plain fetches fail. If MRSCRAPER_API_TOKEN is set, fetch it via `npm run scrape -- "https://www.linkedin.com/in/david-alonso-dominguez/recent-activity/all/" --format json --prompt "List the most recent posts: date, text, links"` (MrScraper unblocker, scripts/mrscraper.js — verified working). Otherwise fall back to the YouTube feed only. Skip his X (https://x.com/Davidal52214920): even unblocked, X shows no posts to logged-out visitors.
+- David Alonso Dominguez (Microsoft, Senior Technical Security Specialist) — Sentinel/Defender XDR content, mostly on LinkedIn (see below). Also machine-fetchable without a token: YouTube Atom feed https://www.youtube.com/feeds/videos.xml?channel_id=UC1IYsYLFOZxQrYD1Be-XIoA (plain XML, no auth).
+- LinkedIn posts (both Rod Trent and David Alonso) — behind an auth wall, plain fetches fail. If MRSCRAPER_API_TOKEN is set, fetch each feed via the MrScraper unblocker (scripts/mrscraper.js, verified working for both):
+  `npm run scrape -- "https://www.linkedin.com/in/rodtrent/recent-activity/all/" --format json --prompt "List the most recent posts: date, text, links"`
+  `npm run scrape -- "https://www.linkedin.com/in/david-alonso-dominguez/recent-activity/all/" --format json --prompt "List the most recent posts: date, text, links"`
+  If a call errors with auth_wall_desktop_profile, retry once — LinkedIn unblocking occasionally misses on the first attempt. No token → fall back to Rod's Substack and David's YouTube feed. Skip X (https://x.com/Davidal52214920): even unblocked, X shows no posts to logged-out visitors.
 
 ## File format
 
