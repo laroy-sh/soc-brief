@@ -57,6 +57,7 @@ Curated roundup (discovery aid — a dated weekly digest; use it to catch items 
 first-party feeds buried, then cite the Microsoft primary source for each change,
 never the newsletter itself):
 - "THE PROMPT for Microsoft Security" (Rod Trent) — https://rodtrent.substack.com/s/the-prompt-for-microsoft-security (weekly). Moved here from microsoftdefender.substack.com, which stays up temporarily during the transition — check the new home first.
+- Security Blog Search — https://securityblogsearch.com/ (community aggregator of Microsoft-security blog posts across Sentinel/Defender/Entra/Intune/Azure; RSS: https://securityblogsearch.com/feed.xml). Use to catch community coverage; cite the linked original post or the Microsoft primary source, not the aggregator.
 - David Alonso Dominguez (Microsoft, Senior Technical Security Specialist) — Sentinel/Defender XDR content, mostly on LinkedIn (see below). Also machine-fetchable without a token: YouTube Atom feed https://www.youtube.com/feeds/videos.xml?channel_id=UC1IYsYLFOZxQrYD1Be-XIoA (plain XML, no auth).
 - LinkedIn posts (both Rod Trent and David Alonso) — behind an auth wall, plain fetches fail. If MRSCRAPER_API_TOKEN is set, fetch each feed via the MrScraper unblocker (scripts/mrscraper.js, verified working for both):
   `npm run scrape -- "https://www.linkedin.com/in/rodtrent/recent-activity/all/" --format json --prompt "List the most recent posts: date, text, links"`
