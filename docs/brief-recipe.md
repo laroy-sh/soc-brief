@@ -44,8 +44,13 @@ Dated spine (primary — real dates):
 - Microsoft Entra blog — https://techcommunity.microsoft.com/category/microsoft-entra/blog/microsoft-entra-blog
 - Microsoft Security Blog — https://www.microsoft.com/en-us/security/blog/
 - MSRC blog + Patch Tuesday — https://msrc.microsoft.com/blog/ · https://msrc.microsoft.com/update-guide
+- Azure Updates, security services filter — https://azure.microsoft.com/en-us/updates?filters=%5B%22App+Configuration%22%2C%22Application+Gateway%22%2C%22Azure+Bastion%22%2C%22Azure+confidential+ledger%22%2C%22Azure+DDoS+Protection%22%2C%22Azure+Dedicated+HSM%22%2C%22Azure+Firewall%22%2C%22Azure+Firewall+Manager%22%2C%22Azure+Front+Door%22%2C%22Key+Vault%22%2C%22Microsoft+Copilot+for+Security%22%2C%22Microsoft+Defender+for+Cloud%22%2C%22Microsoft+Entra+Domain+Services%22%2C%22Microsoft+Sentinel%22%2C%22VPN+Gateway%22%2C%22Web+Application+Firewall%22%5D — per-item dates for GA/preview/retirement across the Azure security services (MDC, Sentinel, Key Vault, Firewall, WAF, etc.). If the filtered page renders empty for a plain fetch, fall back to the AzureCharts mirror below.
+- AzureCharts security updates — https://azurecharts.com/updates?category=security — dated mirror of the Azure Updates security category; fetches reliably. Use it to spot items, then cite the Azure Update entry or the Microsoft primary post, not azurecharts.
 
-Month-context (detail; attach to the announcement week):
+Month-context (detail — but sweep these EVERY run, not just when a blog points
+at them; the platform-side services (MDC, Azure networking/database security)
+often ship GA/preview items and hardware/auth rollout deadlines that never get
+a Tech Community post. Attach each item to the week its date pins to):
 - Sentinel what's new — https://learn.microsoft.com/en-us/azure/sentinel/whats-new (+ /whats-new-archive)
 - Defender XDR what's new — https://learn.microsoft.com/en-us/defender-xdr/whats-new
 - MDE what's new — https://learn.microsoft.com/en-us/defender-endpoint/whats-new-in-microsoft-defender-endpoint
@@ -95,7 +100,11 @@ Exchange Online, M365 Copilot, SharePoint — not for the Defender workloads.)
 
 Hard rules: every item traces to a fetched page with a real in-window date; one
 item appears in exactly one issue; the markdown body is not run through a
-template engine, so KQL braces `{ }` are safe.
+template engine, so KQL braces `{ }` are safe. Catch-up clause: if a dated item
+from an earlier window was missed by every prior issue (check the published
+issues, not memory), carry it into the current issue rather than dropping it —
+better a week late than never published — and prefer "Act by" when it carries a
+future deadline.
 
 **NO BOLD.** Never use `**bold**` in the body. The ONLY allowed bold is the
 leading deadline date in an "## Act by" bullet — e.g. `- **1 Jul 2026** — …`.
