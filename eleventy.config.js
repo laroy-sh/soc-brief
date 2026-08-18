@@ -27,11 +27,13 @@ export default function (eleventyConfig) {
   // Copy static assets straight through to the build output.
   eleventyConfig.addPassthroughCopy("src/css");
   eleventyConfig.addPassthroughCopy("src/assets");
+  eleventyConfig.addPassthroughCopy("src/js");
   // Cloudflare Pages security headers must land at the output root.
   eleventyConfig.addPassthroughCopy("src/_headers");
 
   // Rebuild when CSS changes during `eleventy --serve`.
   eleventyConfig.addWatchTarget("src/css");
+  eleventyConfig.addWatchTarget("src/js");
 
   // Atom feed at /feed.xml, built from the `brief` collection with the full
   // issue body (links made absolute).

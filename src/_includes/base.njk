@@ -36,6 +36,10 @@
         <a href="/intel/">Threat Intel</a>
         <a href="/feed.xml">Feed</a>
       </nav>
+      <form class="search" role="search" data-search>
+        <input type="search" class="search__input" placeholder="Search issues" aria-label="Search issues" autocomplete="off">
+        <ul class="search__results issue-list" data-search-results hidden></ul>
+      </form>
     </div>
   </header>
 
@@ -50,6 +54,8 @@
       <p class="site-foot__fine">© {{ build.year }} {{ site.author }} · <a href="https://laroy.de" target="_blank" rel="me noopener">laroy.de</a> · Sourced from first-party Microsoft channels; every claim links to its source. Not affiliated with Microsoft.</p>
     </div>
   </footer>
+
+  <script type="module" src="/js/search.js?v={{ assets.searchVersion }}"></script>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
