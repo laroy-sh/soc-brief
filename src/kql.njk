@@ -5,35 +5,41 @@ title: "KQL library"
 description: "Every KQL hunting query featured in SOC Weekly Brief, newest first, with a link to the query in its author's repo."
 ---
 {% set queries = collections.kqlQueries %}
-<div class="topic-page">
-  <p class="eyebrow"><a class="backlink" href="/">&larr; Home</a></p>
-  <h1 class="brief__title">KQL library</h1>
-  <p class="topic-count" data-kql-count>{{ queries.length }} queries featured across the weekly issues. Each one links to the original in its author's repo &mdash; run them read-only first and tune the thresholds to your estate.</p>
+<div class="home-grid">
+  <div class="topic-page">
+    <p class="eyebrow"><a class="backlink" href="/">&larr; Home</a></p>
+    <h1 class="brief__title">KQL library</h1>
+    <p class="topic-count" data-kql-count>{{ queries.length }} queries featured across the weekly issues. Each one links to the original in its author's repo &mdash; run them read-only first and tune the thresholds to your estate.</p>
 
-  <form class="kql-filter" role="search" onsubmit="return false">
-    <input type="search" class="search__input kql-filter__input" data-kql-search placeholder="Filter queries" aria-label="Filter queries" autocomplete="off">
-  </form>
-
-  <section class="tagcloud" aria-label="Filter by table">
-    <h2 class="section-label">Filter by table</h2>
-    <ul class="tagcloud__list" data-kql-tables>
-      {% for t in collections.kqlTablesList %}
-      <li><button type="button" class="tagcloud__tag" data-table="{{ t.name }}">{{ t.name }}<span class="tagcloud__count">{{ t.count }}</span></button></li>
+    <div class="prose" data-kql-list>
+      {% for q in queries %}
+      <article class="kql-entry" data-tables="{{ q.tables | join(' ') }}">
+        <h2 class="kql-entry__title"><a href="{{ q.source }}" target="_blank" rel="noopener">{{ q.title }}</a></h2>
+        <p class="kql-entry__meta">{{ q.author }} &middot; <a href="{{ q.issue.url }}">Week {{ q.issue.date | isoWeek }} &middot; {{ q.issue.title | navRange }}</a>{% if q.tables.length %} &middot; {{ q.tables | join(", ") }}{% endif %}</p>
+        <p>{{ q.note }}</p>
+        <pre><code class="language-kql">{{ q.kql }}</code></pre>
+      </article>
       {% endfor %}
-    </ul>
-  </section>
-
-  <div class="prose" data-kql-list>
-    {% for q in queries %}
-    <article class="kql-entry" data-tables="{{ q.tables | join(' ') }}">
-      <h2 class="kql-entry__title"><a href="{{ q.source }}" target="_blank" rel="noopener">{{ q.title }}</a></h2>
-      <p class="kql-entry__meta">{{ q.author }} &middot; <a href="{{ q.issue.url }}">Week {{ q.issue.date | isoWeek }} &middot; {{ q.issue.title | navRange }}</a>{% if q.tables.length %} &middot; {{ q.tables | join(", ") }}{% endif %}</p>
-      <p>{{ q.note }}</p>
-      <pre><code class="language-kql">{{ q.kql }}</code></pre>
-    </article>
-    {% endfor %}
+    </div>
+    <p class="kql-empty" data-kql-empty hidden>No query matches that filter.</p>
   </div>
-  <p class="kql-empty" data-kql-empty hidden>No query matches that filter.</p>
+
+  <aside class="home-aside">
+    <form class="kql-filter" role="search" onsubmit="return false">
+      <h2 class="section-label">Search queries</h2>
+      <input type="search" class="search__input kql-filter__input" data-kql-search placeholder="mshta, ClickFix, SigninLogs&hellip;" aria-label="Search queries" autocomplete="off">
+      <p class="kql-filter__hint">Matches the title, author, description and the query text itself.</p>
+    </form>
+
+    <section class="tagcloud" aria-label="Filter by table">
+      <h2 class="section-label">Filter by table</h2>
+      <ul class="tagcloud__list" data-kql-tables>
+        {% for t in collections.kqlTablesList %}
+        <li><button type="button" class="tagcloud__tag" data-table="{{ t.name }}">{{ t.name }}<span class="tagcloud__count">{{ t.count }}</span></button></li>
+        {% endfor %}
+      </ul>
+    </section>
+  </aside>
 </div>
 
 <script type="module" src="/js/kql.js?v={{ assets.kqlVersion }}"></script>

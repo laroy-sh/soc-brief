@@ -513,13 +513,16 @@ a { color: var(--cyan); }
 .kql-entry__title a { color: inherit; }
 .kql-entry__meta { font-family: var(--mono); font-size: 12.5px; color: var(--ink-2); margin: 6px 0 0; }
 .kql-entry__meta a { color: var(--amber); }
-.kql-filter { margin: 18px 0 22px; }
-.kql-filter__input { width: 100%; max-width: 340px; }
-.kql-filter + .tagcloud .tagcloud__tag {
+.kql-filter { margin: 0 0 26px; }
+.kql-filter__input { width: 100%; }
+.kql-filter__hint { font-family: var(--mono); font-size: 12px; color: var(--ink-3); margin: 8px 0 0; line-height: 1.5; }
+.home-aside .tagcloud__tag {
   font-family: var(--mono);
-  font-size: 13px;
-  padding: 6px 12px;
+  font-size: 12.5px;
+  padding: 5px 11px;
   cursor: pointer;
 }
 .tagcloud__tag.is-active { border-color: var(--cyan); color: var(--cyan); background: var(--panel-2); }
 .kql-empty { font-family: var(--mono); font-size: 13.5px; color: var(--ink-2); }
+/* Long table list must not push the sticky column past the viewport. */
+.home-aside [data-kql-tables] { max-height: 58vh; overflow-y: auto; }
