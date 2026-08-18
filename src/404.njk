@@ -1,0 +1,35 @@
+---
+layout: base.njk
+title: Page not found
+description: That page is not part of the archive.
+eleventyExcludeFromCollections: true
+permalink: /404.html
+---
+{% set briefs = collections.brief | reverse %}
+<div class="home-grid">
+  <article class="brief">
+    <header class="brief__head">
+      <p class="brief__kicker">404</p>
+      <h1 class="brief__title">That page is not in the archive</h1>
+    </header>
+    <div class="prose">
+      <p>The link is wrong, or the issue moved. Every issue lives under its closing Monday, and the archive goes back to January 2026.</p>
+      <nav class="brief-nav brief-nav--start" aria-label="Recovery">
+        {% if briefs.length %}
+        <a class="brief-nav__link" href="{{ briefs[0].url }}">
+          <span class="brief-nav__label">Latest issue · Week {{ briefs[0].date | isoWeek }}</span>
+        </a>
+        {% endif %}
+        <a class="brief-nav__link" href="/">
+          <span class="brief-nav__label">Home</span>
+        </a>
+        <a class="brief-nav__link" href="/kql/">
+          <span class="brief-nav__label">KQL library</span>
+        </a>
+      </nav>
+      <p>Or search the archive from the field in the header.</p>
+    </div>
+  </article>
+
+  {% include "calendar.njk" %}
+</div>

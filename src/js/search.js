@@ -86,15 +86,22 @@ if (typeof document !== "undefined") {
       if (!q || !index) return close();
       let hits = search(q, index.docs);
       let note = "";
+      // The count has to name the query the hits actually came from, which is
+      // the correction when one fired.
+      let shown = q;
       if (!hits.length) {
         const fix = correct(q, index.terms);
         if (fix) {
           hits = search(fix, index.docs);
+          shown = fix;
           note = `<li class="search__note">Showing results for ${escapeHtml(fix)}</li>`;
         }
       }
+      const count = hits.length
+        ? `<li class="search__note">${hits.length} issue${hits.length === 1 ? "" : "s"} match ${escapeHtml(shown)}</li>`
+        : "";
       list.innerHTML = hits.length
-        ? note + hits.map(row).join("")
+        ? note + count + hits.map(row).join("")
         : `<li class="search__note">No issues match ${escapeHtml(q)}</li>`;
       list.hidden = false;
     };
@@ -117,6 +124,20 @@ if (typeof document !== "undefined") {
     // form-action 'none' in _headers blocks a real submit — never submit.
     form.addEventListener("submit", (e) => e.preventDefault());
     document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+
+    // Arrow keys walk the results; the links are already focusable, so this
+    // only has to move focus. ponytail: no roving tabindex, no listbox ARIA.
+    form.addEventListener("keydown", (e) => {
+      if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+      const links = [...list.querySelectorAll("a")];
+      if (!links.length) return;
+      e.preventDefault();
+      const at = links.indexOf(document.activeElement);
+      const step = e.key === "ArrowDown" ? 1 : -1;
+      const next = at < 0 ? (step > 0 ? 0 : links.length - 1) : at + step;
+      if (next < 0) input.focus();
+      else links[Math.min(next, links.length - 1)].focus();
+    });
     document.addEventListener("click", (e) => { if (!form.contains(e.target)) close(); });
   }
 }
