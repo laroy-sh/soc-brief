@@ -496,3 +496,20 @@ a { color: var(--cyan); }
   .search__input { width: 100%; }
   .search__results { width: 100%; }
 }
+
+/* KQL library (/kql/) */
+.kql-entry { margin: 34px 0 0; padding-top: 22px; border-top: 1px solid var(--line-soft); }
+.kql-entry:first-child { border-top: 0; padding-top: 0; margin-top: 22px; }
+.kql-entry__title {
+  font-family: var(--mono);
+  font-size: 15px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--cyan);
+  margin: 0;
+  padding: 0;
+  border-bottom: 0;
+}
+.kql-entry__title a { color: inherit; }
+.kql-entry__meta { font-family: var(--mono); font-size: 12.5px; color: var(--ink-2); margin: 6px 0 0; }
+.kql-entry__meta a { color: var(--amber); }
