@@ -109,8 +109,11 @@ if (typeof document !== "undefined") {
       return loading;
     };
 
-    input.addEventListener("focus", () => load().then(render), { once: true });
-    input.addEventListener("input", render);
+    // Retries on every keystroke if the first fetch failed — load() is
+    // memoized, so the happy path still fetches exactly once.
+    const onInput = () => (index ? render() : load().then(render));
+    input.addEventListener("focus", onInput);
+    input.addEventListener("input", onInput);
     // form-action 'none' in _headers blocks a real submit — never submit.
     form.addEventListener("submit", (e) => e.preventDefault());
     document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
