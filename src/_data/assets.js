@@ -11,6 +11,7 @@ const hash = (path) =>
 
 export default {
   cssVersion: hash("../css/style.css"),
+  fontsVersion: hash("../css/fonts.css"),
   searchVersion: hash("../js/search.js"),
   kqlVersion: hash("../js/kql.js"),
 };
