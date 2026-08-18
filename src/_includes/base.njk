@@ -51,9 +51,20 @@
 
   <footer class="site-foot">
     <div class="site-foot__inner">
-      <p class="site-foot__brand">{{ site.title }}</p>
-      <p class="site-foot__fine">Microsoft security stack briefs for SOC analysts.</p>
-      <p class="site-foot__fine">© {{ build.year }} {{ site.author }} · <a href="https://laroy.de" target="_blank" rel="me noopener">laroy.de</a> · Sourced from first-party Microsoft channels; every claim links to its source. Not affiliated with Microsoft.</p>
+      <div class="site-foot__top">
+        <div class="site-foot__id">
+          <p class="site-foot__brand">{{ site.title }}</p>
+          <p class="site-foot__fine">Microsoft security stack briefs for SOC analysts.</p>
+        </div>
+        <nav class="site-foot__nav" aria-label="Footer">
+          <a href="/">Home</a>
+          <a href="/kql/">KQL</a>
+          <a href="/intel/">Threat Intel</a>
+          <a href="/feed.xml">Feed</a>
+        </nav>
+      </div>
+      <p class="site-foot__fine">Sourced from first-party Microsoft channels; every claim links to its source. Not affiliated with Microsoft.</p>
+      <p class="site-foot__fine site-foot__legal">© {{ build.year }} {{ site.author }} · <a href="https://laroy.de" target="_blank" rel="me noopener">laroy.de</a></p>
     </div>
   </footer>
 
