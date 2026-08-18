@@ -24,6 +24,57 @@ function briefWeekParts(input) {
   return { year, week };
 }
 
+// Known Log Analytics / advanced hunting table names, harvested from the
+// kqlsearch corpus. ponytail: a plain allow-list beats guessing — add a name
+// here if a future query uses a table the tag cloud misses.
+const KQL_TABLES = new Set([
+  "AzureDiagnostics", "AADManagedIdentitySignInLogs", "AADNonInteractiveUserSignInLogs", "AADProvisioningLogs",
+  "AADRiskyUsers", "AADServicePrincipalSignInLogs", "AADSignInEventsBeta", "AADUserRiskEvents",
+  "ADFSSignInLogs", "ADOAuditLogs_CL", "AIAgentsInfo", "ASimDnsActivityLogs", "AgentsInfo",
+  "AlertEvidence", "AppDependencies", "AppEvents", "AuditLogs", "AzureActivity",
+  "AzureDevOpsAuditing", "BehaviorAnalytics", "BehaviorEntities", "CloudAppEvents",
+  "CommonSecurityLog", "CopilotActivity", "CopilotAdminActivity", "DataSecurityBehaviors",
+  "DataSecurityEvents", "DeviceEvents", "DeviceFileCertificateInfo", "DeviceFileEvents",
+  "DeviceImageLoadEvents", "DeviceInfo", "DeviceLogonEvents", "DeviceNetworkEvents",
+  "DeviceNetworkInfo", "DeviceProcessEvents", "DeviceRegistryEvents",
+  "DeviceTvmBrowserExtensions", "DeviceTvmInfoGathering",
+  "DeviceTvmSecureConfigurationAssessment", "DeviceTvmSecureConfigurationAssessmentKB",
+  "DeviceTvmSoftwareInventory", "DeviceTvmSoftwareVulnerabilities",
+  "DeviceTvmSoftwareVulnerabilitiesKB", "EasmRisk_CL", "EasyVista_Assets_CL",
+  "EasyVista_Tickets_CL", "EmailAttachmentInfo", "EmailEvents", "EmailPostDeliveryEvents",
+  "EmailUrlInfo", "EntraIdSignInEvents", "Event", "ExposureGraphEdges", "ExposureGraphNodes",
+  "FileMaliciousContentInfo", "GWSAlerts_CL", "GraphAPIAuditEvents", "Heartbeat",
+  "IdentityDirectoryEvents", "IdentityInfo", "IdentityLogonEvents", "IdentityQueryEvents",
+  "IntuneAuditLogs", "IntuneDeviceComplianceOrg", "IntuneDevices", "IntuneOperationalLogs",
+  "KnowExploitesVulnsCISA", "MessageEvents", "MessageUrlInfo", "MicrosoftGraphActivityLogs",
+  "MicrosoftPurviewInformationProtection", "NetskopeEvents_CL", "NetskopeWebTx_CL",
+  "NetworkAccessTraffic", "OAuthAppInfo", "OfficeActivity", "OpenAIAuditLogs",
+  "OpenAIChatCompletions", "Operation", "Resources", "RiskyServicePrincipals", "SecurityAlert",
+  "SecurityEvent", "SecurityIncident", "SentinelHealth", "ServicePrincipalRiskEvents",
+  "SigninLogs", "StorageBlobLogs", "Syslog", "ThreatIntelIndicators",
+  "ThreatIntelligenceIndicator", "UrlClickEvents", "Usage", "WindowsEvent", "_GetWatchlist",
+]);
+
+// Data tables a query reads: identifiers that head a pipeline, kept only when
+// they are a known table (drops column names and let-variables).
+function kqlTables(kql) {
+  const out = new Set();
+  const lines = kql.split("\n").map((l) => l.replace(/\/\/.*$/, "").trim());
+  lines.forEach((line, i) => {
+    const head = line
+      .replace(/^let\s+[\w.]+\s*=\s*/, "")
+      .replace(/^(materialize|toscalar)\s*\(\s*/, "")
+      .replace(/^\(\s*/, "")
+      .replace(/^union\s+(?:isfuzzy=\w+\s*)?/, "")
+      .replace(/^join\s+(?:kind\s*=\s*\w+\s*)?\(?\s*/, "");
+    for (const part of head.split(",")) {
+      const m = part.trim().match(/^([A-Za-z_][A-Za-z0-9_]{3,})\s*(\|)?$/);
+      if (m && KQL_TABLES.has(m[1])) out.add(m[1]);
+    }
+  });
+  return [...out].sort();
+}
+
 export default function (eleventyConfig) {
   // Copy static assets straight through to the build output.
   eleventyConfig.addPassthroughCopy("src/css");
@@ -121,7 +172,7 @@ export default function (eleventyConfig) {
   // Parses the raw markdown, so a new brief pushed by the weekly routine shows
   // up here on the next build with no extra step. Deliberately tolerant: any
   // paragraph ending in a link, followed by a kql fence, counts as an entry.
-  eleventyConfig.addCollection("kqlQueries", (api) => {
+  const kqlCollection = (api) => {
     const entry = /^(\S.*)\n+```kql\n([\s\S]*?)\n```/gm;
     const link = /\[([^\]]+)\]\((https?:\S+?)\)\)?\s*$/;
     const out = [];
@@ -143,6 +194,7 @@ export default function (eleventyConfig) {
           author: cut === -1 ? "" : label.slice(cut + 3),
           source: l[2],
           kql: m[2],
+          tables: kqlTables(m[2]),
           issue: { url: b.url, title: b.data.title, date: b.date },
         });
         found++;
@@ -153,6 +205,18 @@ export default function (eleventyConfig) {
       }
     }
     return out.sort((a, b) => new Date(b.issue.date) - new Date(a.issue.date));
+  };
+  eleventyConfig.addCollection("kqlQueries", kqlCollection);
+
+  // Tables used across the KQL library, most-used first — the /kql/ tag cloud.
+  eleventyConfig.addCollection("kqlTablesList", (api) => {
+    const counts = {};
+    for (const q of api.getFilteredByTag("brief").length ? kqlCollection(api) : []) {
+      for (const t of q.tables) counts[t] = (counts[t] || 0) + 1;
+    }
+    return Object.entries(counts)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
   });
 
   // Build a per-year calendar: every Monday issue week in the calendar year,
