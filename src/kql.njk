@@ -1,0 +1,23 @@
+---
+layout: base.njk
+permalink: "/kql/"
+title: "KQL library"
+description: "Every KQL hunting query featured in SOC Weekly Brief, newest first, with a link to the query in its author's repo."
+---
+{% set queries = collections.kqlQueries %}
+<div class="topic-page">
+  <p class="eyebrow"><a class="backlink" href="/">← Home</a></p>
+  <h1 class="brief__title">KQL library</h1>
+  <p class="topic-count">{{ queries.length }} quer{% if queries.length == 1 %}y{% else %}ies{% endif %} featured across the weekly issues. Each one links to the original in its author's repo — run them read-only first and tune the thresholds to your estate.</p>
+
+  <div class="prose">
+    {% for q in queries %}
+    <article class="kql-entry">
+      <h2 class="kql-entry__title"><a href="{{ q.source }}" target="_blank" rel="noopener">{{ q.title }}</a></h2>
+      <p class="kql-entry__meta">{{ q.author }} · <a href="{{ q.issue.url }}">Week {{ q.issue.date | isoWeek }} · {{ q.issue.title | navRange }}</a></p>
+      <p>{{ q.note }}</p>
+      <pre><code class="language-kql">{{ q.kql }}</code></pre>
+    </article>
+    {% endfor %}
+  </div>
+</div>

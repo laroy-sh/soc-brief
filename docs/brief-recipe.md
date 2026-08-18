@@ -99,7 +99,10 @@ every paragraph with an inline link to the primary source. 4–8 items typical.
 Optional. 1-3 KQL queries published in the window (KQL Search). Per query: one
 sentence on what it hunts for, ending in a link to the source file in its repo
 ([Title — Author](url)), then the query as published in a fenced kql code block.
-Only queries you actually fetched — never write or "improve" one yourself. Skip
+Only queries you actually fetched — never write or "improve" one yourself. The
+/kql/ library page is generated from these entries at build time, so keep the
+shape exactly: a sentence ending in ([Title — Author](url)), a blank line, then
+the fenced kql block. A brief with no KQL section is simply skipped. Skip
 queries whose text is visibly stale (past deadlines, old dates in the body); the
 kqlsearch date is when the query was indexed, not always when it was written.
 

@@ -1,6 +1,7 @@
 // Eleventy v3 config (ESM). Ported from the awssec project; same week helpers
 // and calendar collection so the two sites share one convention.
 
+import fs from "node:fs";
 import { feedPlugin } from "@11ty/eleventy-plugin-rss";
 
 // --- Week helpers ---
@@ -114,6 +115,44 @@ export default function (eleventyConfig) {
     return Object.entries(map)
       .map(([name, items]) => ({ name, count: items.length, items }))
       .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+  });
+
+  // Every "## KQL to try" entry across all issues, newest first — drives /kql/.
+  // Parses the raw markdown, so a new brief pushed by the weekly routine shows
+  // up here on the next build with no extra step. Deliberately tolerant: any
+  // paragraph ending in a link, followed by a kql fence, counts as an entry.
+  eleventyConfig.addCollection("kqlQueries", (api) => {
+    const entry = /^(\S.*)\n+```kql\n([\s\S]*?)\n```/gm;
+    const link = /\[([^\]]+)\]\((https?:\S+?)\)\)?\s*$/;
+    const out = [];
+    for (const b of api.getFilteredByTag("brief")) {
+      const md = fs.readFileSync(b.inputPath, "utf8");
+      const section = md.split("## KQL to try")[1];
+      if (!section) continue;
+      const body = section.split(/^## /m)[0];
+      let found = 0;
+      for (const m of body.matchAll(entry)) {
+        const line = m[1];
+        const l = line.match(link);
+        if (!l) continue;
+        const label = l[1];
+        const cut = label.lastIndexOf(" — ");
+        out.push({
+          note: line.replace(link, "").replace(/\s*\($/, "").trim() || label,
+          title: cut === -1 ? label : label.slice(0, cut),
+          author: cut === -1 ? "" : label.slice(cut + 3),
+          source: l[2],
+          kql: m[2],
+          issue: { url: b.url, title: b.data.title, date: b.date },
+        });
+        found++;
+      }
+      const fences = (body.match(/```kql/g) || []).length;
+      if (found !== fences) {
+        console.warn(`[kql] ${b.inputPath}: parsed ${found} of ${fences} queries — check the entry format`);
+      }
+    }
+    return out.sort((a, b) => new Date(b.issue.date) - new Date(a.issue.date));
   });
 
   // Build a per-year calendar: every Monday issue week in the calendar year,
