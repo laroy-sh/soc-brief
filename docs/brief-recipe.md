@@ -69,6 +69,13 @@ never the newsletter itself):
   `npm run scrape -- "https://www.linkedin.com/in/david-alonso-dominguez/recent-activity/all/" --format json --prompt "List the most recent posts: date, text, links"`
   If a call errors with auth_wall_desktop_profile, retry once — LinkedIn unblocking occasionally misses on the first attempt. No token → fall back to Rod's Substack and David's YouTube feed. Skip X (https://x.com/Davidal52214920): even unblocked, X shows no posts to logged-out visitors.
 
+KQL queries (detection content — dated, one section per issue):
+- KQL Search — https://www.kqlsearch.com/ — search engine over community + Microsoft
+  KQL queries for Sentinel/Defender/Azure Monitor. The homepage lists newest queries
+  first with a date, author, tables and a link to the source repo. Take only queries
+  whose date falls in the window, and cite the source repo link the entry points at
+  (usually GitHub), not the kqlsearch page.
+
 ## File format
 
 ```
@@ -87,6 +94,12 @@ Only when the window has deadlines/enforcement dates. Bullets:
 Always present. One paragraph per item, blank line between. 2–4 sentences: what
 shipped (GA / preview / deprecation / rename) and why it matters on shift. End
 every paragraph with an inline link to the primary source. 4–8 items typical.
+
+## KQL to try
+Optional. 1-3 KQL queries published in the window (KQL Search). Per query: one
+sentence on what it hunts for, then a fenced kql code block with the query
+as published, then a link to the source repo. Only queries you actually fetched —
+never write or "improve" one yourself.
 
 ## Worth knowing
 Optional. 1–3 short context paragraphs (portal-migration drumbeat, Microsoft
