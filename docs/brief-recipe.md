@@ -135,10 +135,10 @@ else is a defect.
 
 1. **Now** — this doc is the standard; the Jan–Jul 2026 backfill was generated
    against it (one agent per week).
-2. **Prove it** — going-forward weekly issues run against this doc, deploying to
-   a preview URL for a human skim before production, for the first few weeks.
-   Note here whatever the recipe gets wrong (bad date pins, scope creep, thin
-   weeks handled poorly).
+2. **Prove it** *(done)* — going-forward weekly issues ran against this doc for
+   the first few weeks. The Monday routine now pushes straight to `main` and
+   publishes to production. Keep noting here whatever the recipe gets wrong (bad
+   date pins, scope creep, thin weeks handled poorly).
 3. **Harden** — once it's consistently clean, fold this doc into a `soc-brief`
    skill (SKILL.md = this recipe) that both the scheduled task and manual runs
    invoke, and let the task deploy straight to production.

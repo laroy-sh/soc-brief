@@ -30,11 +30,19 @@ npm run build      # writes _site/
 
 ## Deploy
 
-Cloudflare Pages **direct upload** — a `git push` does NOT auto-deploy.
+GitHub Actions (`.github/workflows/deploy.yml`) deploys to Cloudflare Pages:
+
+- push to `main` → production, soc-brief.pages.dev
+- pull request to `main` → a preview deployment, URL commented on the PR
+
+Needs the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repo secrets.
+
+Manual direct upload is still available when you need to publish without a push:
 
 ```
 npm run build
-npm run deploy     # wrangler pages deploy _site --project-name soc-brief
+npm run deploy          # wrangler pages deploy _site --branch main
+npm run deploy:preview  # same, to the review branch
 ```
 
 ## Writing an issue
@@ -46,7 +54,10 @@ The calendar and prev/next nav update automatically from the file's `date`.
 
 ## Weekly automation
 
-A Claude Code scheduled task researches the trailing week against the sources in
-`docs/brief-recipe.md`, writes the markdown issue, builds, and deploys. During
-the proving period it deploys to a preview URL and pings for review before
-production. See `docs/brief-recipe.md` for the current stage.
+A Claude Code cloud routine runs every Monday at 09:00 UTC. It researches the
+trailing week against the sources in `docs/brief-recipe.md`, writes the markdown
+issue to `src/briefs/`, and pushes straight to `main` — which the deploy workflow
+above publishes to production. No PR, no preview step.
+
+`docs/brief-recipe.md` is the standard it writes against; note anything the
+recipe gets wrong there.
