@@ -15,8 +15,11 @@
   --cyan: #37cbd6;
   --cyan-dim: #1f6d78;
   --amber: #f0a93b;
+  /* Three voices from one superfamily: mono labels and code, sans prose,
+     serif headlines. See src/css/fonts.css. */
   --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  --sans: "Space Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
   --wrap: 1080px;
 }
 
@@ -97,7 +100,13 @@ html {
 }
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
 .brand__text { display: flex; flex-direction: column; gap: 2px; }
-.brand__name { font-weight: 700; letter-spacing: -.01em; font-size: 19px; line-height: 1.1; }
+.brand__name {
+  font-family: var(--serif);
+  font-weight: 600;
+  letter-spacing: -.005em;
+  font-size: 20px;
+  line-height: 1.1;
+}
 .brand__tagline {
   font-family: var(--mono);
   font-size: 12px;
@@ -148,10 +157,11 @@ html {
   margin: 0 0 10px;
 }
 .brief__title {
-  font-size: clamp(28px, 4.5vw, 40px);
-  line-height: 1.1;
-  font-weight: 700;
-  letter-spacing: -.015em;
+  font-family: var(--serif);
+  font-size: clamp(29px, 4.5vw, 42px);
+  line-height: 1.14;
+  font-weight: 600;
+  letter-spacing: -.008em;
   margin: 6px 0 0;
 }
 .tags { list-style: none; padding: 0; margin: 18px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
@@ -179,6 +189,7 @@ html {
 .prose { margin-top: 26px; color: var(--ink); line-height: 1.75; }
 .prose h2 {
   font-family: var(--mono);
+  font-weight: 600;
   font-size: 13px;
   letter-spacing: .12em;
   text-transform: uppercase;
@@ -520,6 +531,7 @@ html {
 .kql-entry:first-child { border-top: 0; padding-top: 0; margin-top: 22px; }
 .prose .kql-entry__title {
   font-family: var(--mono);
+  font-weight: 600;
   font-size: 15px;
   letter-spacing: 0;
   text-transform: none;
