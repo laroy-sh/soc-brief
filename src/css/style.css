@@ -470,6 +470,8 @@ a { color: var(--cyan); }
 }
 .search__input:focus { outline: none; border-color: var(--cyan-dim); }
 .search__input::placeholder { color: var(--ink-3); }
+[hidden] { display: none !important; }
+
 .search__results {
   position: absolute;
   top: calc(100% + 8px);
