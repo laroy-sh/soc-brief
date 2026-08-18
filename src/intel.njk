@@ -9,12 +9,12 @@ permalink: /intel/
   <h1 class="brief__title">Threat Intelligence</h1>
   <p class="intel__note">Live dashboards embedded from ransomware.abrandao.net — external content, refreshed at the source.</p>
 
-  <div class="intel__tabs" role="tablist" aria-label="Threat intelligence dashboards">
-    <button class="intel__tab is-active" type="button" data-panel="threat">Threat Intel</button>
-    <button class="intel__tab" type="button" data-panel="cve">CVE Intelligence</button>
-    <button class="intel__tab" type="button" data-panel="mitre">MITRE ATT&amp;CK</button>
-    <button class="intel__tab" type="button" data-panel="victims">Victims</button>
-    <button class="intel__tab" type="button" data-panel="groups">Ransomware Groups</button>
+  <div class="intel__tabs" role="group" aria-label="Threat intelligence dashboards">
+    <button class="intel__tab is-active" type="button" aria-pressed="true" data-panel="threat">Threat Intel</button>
+    <button class="intel__tab" type="button" aria-pressed="false" data-panel="cve">CVE Intelligence</button>
+    <button class="intel__tab" type="button" aria-pressed="false" data-panel="mitre">MITRE ATT&amp;CK</button>
+    <button class="intel__tab" type="button" aria-pressed="false" data-panel="victims">Victims</button>
+    <button class="intel__tab" type="button" aria-pressed="false" data-panel="groups">Ransomware Groups</button>
   </div>
 
   <div class="intel__panels">
@@ -34,6 +34,8 @@ permalink: /intel/
       <iframe src="https://ransomware.abrandao.net/groups_dashboard.html" title="Ransomware Groups Monitoring" loading="lazy"></iframe>
     </div>
   </div>
+
+  <p class="intel__note">Panel blank? The dashboards are hosted and served by a third party — open them directly at <a href="https://ransomware.abrandao.net/" target="_blank" rel="noopener">ransomware.abrandao.net</a>.</p>
 </div>
 
 <script>
@@ -43,7 +45,10 @@ permalink: /intel/
     tabs.forEach(function (t) {
       t.addEventListener("click", function () {
         var p = t.dataset.panel;
-        tabs.forEach(function (x) { x.classList.toggle("is-active", x === t); });
+        tabs.forEach(function (x) {
+          x.classList.toggle("is-active", x === t);
+          x.setAttribute("aria-pressed", String(x === t));
+        });
         panels.forEach(function (x) { x.classList.toggle("is-active", x.dataset.panel === p); });
       });
     });
