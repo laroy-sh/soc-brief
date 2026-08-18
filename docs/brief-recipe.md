@@ -97,9 +97,11 @@ every paragraph with an inline link to the primary source. 4–8 items typical.
 
 ## KQL to try
 Optional. 1-3 KQL queries published in the window (KQL Search). Per query: one
-sentence on what it hunts for, then a fenced kql code block with the query
-as published, then a link to the source repo. Only queries you actually fetched —
-never write or "improve" one yourself.
+sentence on what it hunts for, ending in a link to the source file in its repo
+([Title — Author](url)), then the query as published in a fenced kql code block.
+Only queries you actually fetched — never write or "improve" one yourself. Skip
+queries whose text is visibly stale (past deadlines, old dates in the body); the
+kqlsearch date is when the query was indexed, not always when it was written.
 
 ## Worth knowing
 Optional. 1–3 short context paragraphs (portal-migration drumbeat, Microsoft
