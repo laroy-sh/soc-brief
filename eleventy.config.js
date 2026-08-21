@@ -97,7 +97,7 @@ export default function (eleventyConfig) {
       language: "en",
       title: "SOC Weekly Brief",
       subtitle: "The week in the Microsoft security stack, distilled",
-      base: "https://soc-brief.pages.dev/",
+      base: "https://soc-brief.mbctg.com/",
       author: { name: "Laroy Shtotland" },
     },
   });
