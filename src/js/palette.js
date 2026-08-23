@@ -16,6 +16,7 @@ if (trigger && dialog) {
 
   const PAGES = [
     { title: "Deadlines", url: "/deadlines/", hint: "every dated obligation" },
+    { title: "Threats", url: "/threats/", hint: "actors and families covered" },
     { title: "KQL library", url: "/kql/", hint: "every featured hunting query" },
     { title: "Threat Intel", url: "/intel/", hint: "live dashboards" },
     { title: "Atom feed", url: "/feed.xml", hint: "subscribe" },
