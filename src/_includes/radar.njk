@@ -1,0 +1,45 @@
+{% set live = collections.deadlines | liveDeadlines(build.today) %}
+{% if live.length %}
+{% set next = live[0] %}
+{% set span = live | railSpan(build.today) %}
+<section class="radar reveal" style="--i: 0" aria-labelledby="radar-heading" data-radar data-today="{{ build.today }}">
+  <div class="radar__head">
+    <h2 class="section-label" id="radar-heading">Deadline radar</h2>
+    <p class="radar__summary" data-radar-summary
+       data-next-iso="{{ next.iso }}" data-next-label="{{ next.label }}">
+      {{ live.length }} obligation{% if live.length != 1 %}s{% endif %} still ahead — the next falls on
+      <b>{{ next.label }}</b>. <a href="/deadlines/">Every deadline &rarr;</a>
+    </p>
+  </div>
+
+  <div class="radar__rail">
+    <ol class="radar__ticks" aria-hidden="true">
+      <li class="radar__tick radar__tick--now" style="--x: 0%"><span>today</span></li>
+      {% for t in [{ d: 7, l: "1 week" }, { d: 30, l: "1 month" }, { d: 90, l: "3 months" }, { d: 180, l: "6 months" }, { d: 365, l: "1 year" }] %}
+        {% if t.d < span %}
+        <li class="radar__tick" style="--x: {{ t.d | railPos(span) }}%"><span>{{ t.l }}</span></li>
+        {% endif %}
+      {% endfor %}
+    </ol>
+
+    <ol class="radar__marks">
+      {% for d in live %}
+      {% set days = d.iso | daysUntil(build.today) %}
+      {% set pos = days | railPos(span) %}
+      <li class="radar__mark" style="--x: {{ pos }}%; --i: {{ loop.index0 }}"
+          data-status="{{ d.iso | deadlineStatus(build.today) }}" data-iso="{{ d.iso }}"
+          data-align="{% if pos < 20 %}start{% elif pos > 80 %}end{% else %}center{% endif %}">
+        <a class="radar__pin" href="/deadlines/#{{ d | deadlineId }}">
+          <span class="radar__pin-stem" aria-hidden="true"></span>
+          <span class="visually-hidden">{{ d.label }}, in {{ days }} day{% if days != 1 %}s{% endif %}. {{ d.text | truncate(120) }}</span>
+        </a>
+        <div class="radar__card" aria-hidden="true">
+          <p class="radar__card-date"><b>{{ d.label }}</b><span class="radar__card-in" data-radar-in>in {{ days }} day{% if days != 1 %}s{% endif %}</span></p>
+          <p class="radar__card-text">{{ d.text | truncate(150) }}</p>
+        </div>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+{% endif %}

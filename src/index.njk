@@ -5,6 +5,8 @@ layout: base.njk
 {% if briefs.length %}
   {% set lead = briefs[0] %}
 
+  {% include "radar.njk" %}
+
   <div class="home-grid">
     <article class="brief brief--home reveal" style="--i: 0">
       <header class="brief__head">

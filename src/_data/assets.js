@@ -13,5 +13,9 @@ export default {
   cssVersion: hash("../css/style.css"),
   fontsVersion: hash("../css/fonts.css"),
   searchVersion: hash("../js/search.js"),
+  paletteVersion: hash("../js/palette.js") + hash("../js/search.js"),
+  deadlinesVersion: hash("../js/deadlines.js"),
+  transitionsVersion: hash("../js/transitions.js"),
+  fieldVersion: hash("../js/field.js"),
   kqlVersion: hash("../js/kql.js"),
 };

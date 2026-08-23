@@ -1,0 +1,64 @@
+---
+layout: base.njk
+permalink: "/deadlines/"
+title: "Deadlines"
+description: "Every dated obligation from the weekly issues — retirements, cutovers and KEV due dates — on one page, with the week each one was first raised."
+---
+{% set all = collections.deadlines %}
+{% set live = all | liveDeadlines(build.today) %}
+{% set undated = all | undatedDeadlines %}
+{% set passed = all | passedDeadlines(build.today) %}
+
+{% macro row(d, days) %}
+  {% set status = d.iso | deadlineStatus(build.today) %}
+  <li class="deadline" id="{{ d | deadlineId }}" data-status="{{ status }}" data-iso="{{ d.iso }}">
+    <p class="deadline__when">
+      <b class="deadline__date">{{ d.label }}</b>
+      {% if d.iso %}<span class="deadline__in" data-deadline-in>{% if days == 0 %}today{% elif days > 0 %}in {{ days }} day{% if days != 1 %}s{% endif %}{% else %}{{ 0 - days }} day{% if days != -1 %}s{% endif %} ago{% endif %}</span>{% endif %}
+    </p>
+    <div class="deadline__body">
+      <p class="deadline__text">{{ d.text }}</p>
+      <p class="deadline__meta">
+        {% if d.source %}<a href="{{ d.source }}" target="_blank" rel="noopener">{{ d.sourceLabel }}</a> &middot; {% endif %}
+        <a href="{{ d.lastSeen.url }}">week {{ d.lastSeen.week }}</a>{% if d.issues.length > 1 %}, raised in {{ d.issues.length }} issues since week {{ d.firstSeen.week }}{% endif %}
+      </p>
+    </div>
+  </li>
+{% endmacro %}
+
+<div class="home-grid">
+  <div class="topic-page">
+    <p class="eyebrow"><a class="backlink" href="/">&larr; Home</a></p>
+    <h1 class="brief__title">Deadlines</h1>
+    <p class="topic-count">Every dated obligation the weekly issues have carried — retirements, cutovers, KEV due dates. Repeats across weeks are folded into one entry, kept in the wording of the issue that reported it last. The countdown runs against your clock, not the build.</p>
+
+    {% if live.length %}
+    <section class="deadline-group">
+      <h2 class="section-label">Still ahead &middot; {{ live.length }}</h2>
+      <ol class="deadline-list">
+        {% for d in live %}{{ row(d, d.iso | daysUntil(build.today)) }}{% endfor %}
+      </ol>
+    </section>
+    {% endif %}
+
+    {% if undated.length %}
+    <section class="deadline-group">
+      <h2 class="section-label">No fixed date &middot; {{ undated.length }}</h2>
+      <ol class="deadline-list">
+        {% for d in undated %}{{ row(d, null) }}{% endfor %}
+      </ol>
+    </section>
+    {% endif %}
+
+    {% if passed.length %}
+    <section class="deadline-group deadline-group--past">
+      <h2 class="section-label">Passed &middot; {{ passed.length }}</h2>
+      <ol class="deadline-list">
+        {% for d in passed %}{{ row(d, d.iso | daysUntil(build.today)) }}{% endfor %}
+      </ol>
+    </section>
+    {% endif %}
+  </div>
+
+  {% include "calendar.njk" %}
+</div>

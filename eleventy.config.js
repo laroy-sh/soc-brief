@@ -3,6 +3,7 @@
 
 import fs from "node:fs";
 import { feedPlugin } from "@11ty/eleventy-plugin-rss";
+import { parseActBy, collapseDeadlines, deadlineStatus } from "./scripts/actby.mjs";
 
 // --- Week helpers ---
 function firstMondayOfYear(year) {
@@ -153,6 +154,28 @@ export default function (eleventyConfig) {
     return Math.max(1, Math.round(words / 200));
   });
 
+  // Deadline helpers. The radar rail compresses time with a square-root scale:
+  // the next fortnight gets room to breathe while a retirement eighteen months
+  // out still lands on the same axis instead of falling off it.
+  const days = (iso, today) => Math.round((Date.parse(iso) - Date.parse(today)) / 864e5);
+  eleventyConfig.addFilter("deadlineStatus", (iso, today) => deadlineStatus(iso, today));
+  eleventyConfig.addFilter("daysUntil", days);
+  // The axis ends a little past the furthest obligation, so the rail is always
+  // fully used however far out the horizon happens to sit.
+  eleventyConfig.addFilter("railSpan", (list, today) =>
+    Math.max(120, Math.ceil(Math.max(...list.map((d) => days(d.iso, today))) * 1.12)));
+  eleventyConfig.addFilter("railPos", (n, span) => {
+    const clamped = Math.min(Math.max(n, 0), span);
+    return +(Math.sqrt(clamped / span) * 100).toFixed(2);
+  });
+  eleventyConfig.addFilter("liveDeadlines", (list, today) =>
+    list.filter((d) => d.iso && d.iso >= today));
+  eleventyConfig.addFilter("passedDeadlines", (list, today) =>
+    list.filter((d) => d.iso && d.iso < today).reverse());
+  eleventyConfig.addFilter("undatedDeadlines", (list) => list.filter((d) => !d.iso));
+  eleventyConfig.addFilter("deadlineId", (d) =>
+    `d-${d.iso || String(d.label).toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${String(d.text).replace(/[^a-zA-Z0-9]/g, "").slice(0, 12).toLowerCase()}`);
+
   // Unique topics across all issues, with the issues carrying each — drives the
   // tag cloud and the per-topic pages. Sorted by frequency, then name.
   eleventyConfig.addCollection("topicsList", (api) => {
@@ -217,6 +240,22 @@ export default function (eleventyConfig) {
     return Object.entries(counts)
       .map(([name, count]) => ({ name, count }))
       .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+  });
+
+  // Every dated obligation from the `## Act by` sections, collapsed so an
+  // obligation repeated week after week is one entry — the deadline radar on the
+  // home page and /deadlines/. Parsing the raw markdown keeps this current with
+  // no extra step when the weekly routine pushes an issue.
+  eleventyConfig.addCollection("deadlines", (api) => {
+    const issues = api.getFilteredByTag("brief").map((b) => {
+      const { week } = briefWeekParts(new Date(b.date));
+      return {
+        date: new Date(b.date).toISOString().slice(0, 10),
+        ref: { url: b.url, title: b.data.title, week },
+        items: parseActBy(fs.readFileSync(b.inputPath, "utf8")),
+      };
+    });
+    return collapseDeadlines(issues);
   });
 
   // Build a per-year calendar: every Monday issue week in the calendar year,
