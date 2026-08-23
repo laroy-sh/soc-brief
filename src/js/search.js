@@ -1,10 +1,11 @@
-// Client-side search over /search-index.json.
-// ponytail: 28 issues, ~150 KB of prose — Array.filter over one blob beats any
-// index library here. Reassess past roughly 300 issues.
+// Client-side search over /search-index.json. Pure functions only — the command
+// palette in src/js/palette.js owns every bit of DOM, and scripts/search.test.js
+// runs these directly in Node.
 //
-// The pure functions below are exported so scripts/search.test.js can run them
-// in Node; the DOM wiring at the bottom is guarded so importing is side-effect
-// free.
+// ponytail: 34 issues, ~200 KB of prose — Array.filter over one blob beats any
+// index library here, and beats a Web Worker too (a full pass is well under a
+// frame, and the CSP would have to grow a worker-src to allow one). Reassess
+// past roughly 300 issues.
 
 // Levenshtein, two rows. Only ever run against the terms vocabulary.
 export function distance(a, b) {
@@ -43,12 +44,15 @@ export function correct(query, terms) {
 
 // Topic hit 100, title hit 50, plus one point per body occurrence. At this
 // corpus size BM25 would rank essentially identically.
+// Folded body text, computed once per doc and cached on it.
+export const folded = (doc) => (doc.textLower ||= doc.text.toLowerCase());
+
 export function search(query, docs) {
   const q = query.trim().toLowerCase();
   if (!q) return [];
   return docs
     .map((doc) => {
-      let score = doc.text.split(q).length - 1;
+      let score = folded(doc).split(q).length - 1;
       if (doc.topics.some((t) => t.toLowerCase().includes(q))) score += 100;
       if (doc.title.toLowerCase().includes(q)) score += 50;
       return { doc, score };
@@ -58,86 +62,17 @@ export function search(query, docs) {
     .map((r) => r.doc);
 }
 
-if (typeof document !== "undefined") {
-  const form = document.querySelector("[data-search]");
-  const input = form && form.querySelector("input");
-  const list = document.querySelector("[data-search-results]");
-
-  if (form && input && list) {
-    let index = null;
-    let loading = null;
-
-    const escapeHtml = (s) =>
-      String(s).replace(/[&<>"']/g, (c) =>
-        ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
-
-    const row = (d) =>
-      `<li class="issue-list__item"><a href="${d.url}">` +
-      `<span class="issue-list__week">Week ${d.week}</span>` +
-      `<span class="issue-list__title">${escapeHtml(d.title)}</span></a></li>`;
-
-    const close = () => {
-      list.hidden = true;
-      list.innerHTML = "";
-    };
-
-    const render = () => {
-      const q = input.value.trim();
-      if (!q || !index) return close();
-      let hits = search(q, index.docs);
-      let note = "";
-      // The count has to name the query the hits actually came from, which is
-      // the correction when one fired.
-      let shown = q;
-      if (!hits.length) {
-        const fix = correct(q, index.terms);
-        if (fix) {
-          hits = search(fix, index.docs);
-          shown = fix;
-          note = `<li class="search__note">Showing results for ${escapeHtml(fix)}</li>`;
-        }
-      }
-      const count = hits.length
-        ? `<li class="search__note">${hits.length} issue${hits.length === 1 ? "" : "s"} match ${escapeHtml(shown)}</li>`
-        : "";
-      list.innerHTML = hits.length
-        ? note + count + hits.map(row).join("")
-        : `<li class="search__note">No issues match ${escapeHtml(q)}</li>`;
-      list.hidden = false;
-    };
-
-    const load = () => {
-      // ponytail: fetched once, lazily. No debounce — scanning 28 docs is
-      // sub-millisecond.
-      loading ||= fetch("/search-index.json")
-        .then((r) => r.json())
-        .then((data) => { index = data; })
-        .catch(() => { loading = null; });
-      return loading;
-    };
-
-    // Retries on every keystroke if the first fetch failed — load() is
-    // memoized, so the happy path still fetches exactly once.
-    const onInput = () => (index ? render() : load().then(render));
-    input.addEventListener("focus", onInput);
-    input.addEventListener("input", onInput);
-    // form-action 'none' in _headers blocks a real submit — never submit.
-    form.addEventListener("submit", (e) => e.preventDefault());
-    document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
-
-    // Arrow keys walk the results; the links are already focusable, so this
-    // only has to move focus. ponytail: no roving tabindex, no listbox ARIA.
-    form.addEventListener("keydown", (e) => {
-      if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
-      const links = [...list.querySelectorAll("a")];
-      if (!links.length) return;
-      e.preventDefault();
-      const at = links.indexOf(document.activeElement);
-      const step = e.key === "ArrowDown" ? 1 : -1;
-      const next = at < 0 ? (step > 0 ? 0 : links.length - 1) : at + step;
-      if (next < 0) input.focus();
-      else links[Math.min(next, links.length - 1)].focus();
-    });
-    document.addEventListener("click", (e) => { if (!form.contains(e.target)) close(); });
-  }
+// The first body match with enough room either side to read it, split so the
+// caller can mark the hit without running a regex over user input.
+export function snippet(doc, query, radius = 90) {
+  const q = query.trim().toLowerCase();
+  const at = q ? folded(doc).indexOf(q) : -1;
+  if (at === -1) return null;
+  const from = Math.max(0, at - radius);
+  const to = Math.min(doc.text.length, at + q.length + radius);
+  return {
+    before: (from > 0 ? "…" : "") + doc.text.slice(from, at),
+    match: doc.text.slice(at, at + q.length),
+    after: doc.text.slice(at + q.length, to) + (to < doc.text.length ? "…" : ""),
+  };
 }

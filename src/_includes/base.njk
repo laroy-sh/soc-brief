@@ -22,6 +22,28 @@
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
+  <canvas class="field" data-field aria-hidden="true"></canvas>
+
+  <dialog class="palette" data-palette aria-label="Search and jump to">
+    <form class="palette__form" role="search" onsubmit="return false">
+      <svg class="icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <circle cx="9" cy="9" r="5.5"/><path d="M13.2 13.2 17.5 17.5" stroke-linecap="round"/>
+      </svg>
+      <input class="palette__input" type="text" data-palette-input autocomplete="off" spellcheck="false"
+             role="combobox" aria-expanded="true" aria-controls="palette-results"
+             aria-label="Search issues, topics and pages" placeholder="Search every issue, topic and page">
+    </form>
+    <div class="palette__results" id="palette-results" role="listbox"
+         aria-label="Results" data-palette-results></div>
+    <p class="palette__foot">
+      <span><kbd>&uarr;</kbd><kbd>&darr;</kbd> move</span>
+      <span><kbd>&crarr;</kbd> open</span>
+      <span><kbd>esc</kbd> close</span>
+      <span class="palette__foot-note">Searches the full text of every issue.</span>
+    </p>
+  </dialog>
+
+  <div class="read-progress" aria-hidden="true"></div>
 
   <header class="masthead">
     <div class="masthead__inner">
@@ -34,14 +56,18 @@
       </a>
       <nav class="nav" aria-label="Primary">
         <a href="/">Home</a>
+        <a href="/deadlines/">Deadlines</a>
         <a href="/kql/">KQL</a>
         <a href="/intel/">Threat Intel</a>
         <a href="/feed.xml">Feed</a>
       </nav>
-      <form class="search" role="search" data-search>
-        <input type="search" class="search__input" placeholder="Search issues" aria-label="Search issues" autocomplete="off">
-        <ul class="search__results issue-list" data-search-results hidden></ul>
-      </form>
+      <button class="palette-trigger" type="button" data-palette-open>
+        <svg class="icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="9" cy="9" r="5.5"/><path d="M13.2 13.2 17.5 17.5" stroke-linecap="round"/>
+        </svg>
+        <span class="palette-trigger__label">Search issues</span>
+        <kbd class="palette-trigger__key" data-palette-key>Ctrl K</kbd>
+      </button>
     </div>
   </header>
 
@@ -58,6 +84,7 @@
         </div>
         <nav class="site-foot__nav" aria-label="Footer">
           <a href="/">Home</a>
+          <a href="/deadlines/">Deadlines</a>
           <a href="/kql/">KQL</a>
           <a href="/intel/">Threat Intel</a>
           <a href="/feed.xml">Feed</a>
@@ -68,7 +95,10 @@
     </div>
   </footer>
 
-  <script type="module" src="/js/search.js?v={{ assets.searchVersion }}"></script>
+  <script type="module" src="/js/palette.js?v={{ assets.paletteVersion }}"></script>
+  <script type="module" src="/js/deadlines.js?v={{ assets.deadlinesVersion }}"></script>
+  <script type="module" src="/js/transitions.js?v={{ assets.transitionsVersion }}"></script>
+  <script type="module" src="/js/field.js?v={{ assets.fieldVersion }}"></script>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {

@@ -5,7 +5,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
-import { search, correct, distance } from "../src/js/search.js";
+import { search, correct, distance, snippet, folded } from "../src/js/search.js";
 
 const path = new URL("../_site/search-index.json", import.meta.url);
 const built = existsSync(path);
@@ -27,7 +27,7 @@ test("equal scores tie-break newest first", opts, () => {
   assert.ok(hits.length > 1);
   // Same-score pairs must be in descending date order.
   const byScore = {};
-  for (const d of hits) (byScore[d.text.split("microsoft").length - 1] ||= []).push(d.date);
+  for (const d of hits) (byScore[folded(d).split("microsoft").length - 1] ||= []).push(d.date);
   for (const dates of Object.values(byScore)) {
     assert.deepEqual(dates, [...dates].sort().reverse());
   }
@@ -53,4 +53,15 @@ test("corrects a typo to a real term", opts, () => {
 test("no correction for short or multi-word queries", () => {
   assert.equal(correct("sen", ["sentinel"]), null);
   assert.equal(correct("sentinal id", ["sentinel"]), null);
+});
+
+test("a snippet quotes the match in its original case", opts, () => {
+  const [hit] = search("tamper protection", index.docs);
+  const s = snippet(hit, "tamper protection");
+  assert.match(s.match, /tamper protection/i);
+  assert.ok(s.before.length + s.after.length > 40);
+});
+
+test("no snippet when the hit is only in the title or topics", () => {
+  assert.equal(snippet({ text: "nothing here" }, "sentinel"), null);
 });

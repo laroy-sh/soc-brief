@@ -14,10 +14,11 @@ export default class {
     const docs = collections.brief.map((b) => {
       const title = b.data.title;
       const topics = b.data.topics || [];
-      // Pre-lowercased and tag-stripped: this text is only ever matched
-      // against, never displayed. ponytail: .toLowerCase() is the only
+      // Tag-stripped but original case: the command palette shows a snippet of
+      // this text around the match, so it has to stay readable. Matching
+      // lowercases it once, client-side. ponytail: case folding is the only
       // normalization — the corpus has no accents and no curly quotes.
-      const text = String(b.templateContent).replace(/<[^>]+>/g, " ").toLowerCase();
+      const text = String(b.templateContent).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
       for (const w of `${text} ${title} ${topics.join(" ")}`.toLowerCase().split(/[^a-z0-9]+/)) {
         if (w.length > 2) terms.add(w);
       }
