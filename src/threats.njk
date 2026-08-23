@@ -1,0 +1,44 @@
+---
+layout: base.njk
+permalink: "/threats/"
+title: "Threats"
+description: "Every threat actor and malware family the weekly issues have covered, with the weeks that covered them."
+---
+{% set threats = collections.threats %}
+{% set actors = threats | ofKind("actor") %}
+{% set families = threats | ofKind("family") %}
+
+{% macro row(t) %}
+  <li class="threat" id="{{ t.name | threatId }}" data-kind="{{ t.kind }}">
+    <p class="threat__name">{{ t.name }}<span class="threat__what">{{ t.context }}</span></p>
+    <ul class="threat__issues">
+      {% for i in t.issues | reverse %}
+      <li><a href="{{ i.url }}">Week {{ i.week }} · {{ i.title | navRange }}</a></li>
+      {% endfor %}
+    </ul>
+  </li>
+{% endmacro %}
+
+<div class="home-grid">
+  <div class="topic-page">
+    <p class="eyebrow"><a class="backlink" href="/">&larr; Home</a></p>
+    <h1 class="brief__title">Threats</h1>
+    <p class="topic-count">Every threat actor and malware family named in the weekly issues, newest coverage first. Actors are taken from Microsoft's own naming — Storm-#### before attribution, a weather name after — and families only where the issue says what they are. For live indicator feeds, the <a href="/intel/">threat intelligence dashboards</a> sit alongside this.</p>
+
+    {% if actors.length %}
+    <section class="threat-group">
+      <h2 class="section-label">Actors &middot; {{ actors.length }}</h2>
+      <ol class="threat-list">{% for t in actors %}{{ row(t) }}{% endfor %}</ol>
+    </section>
+    {% endif %}
+
+    {% if families.length %}
+    <section class="threat-group">
+      <h2 class="section-label">Malware and named threats &middot; {{ families.length }}</h2>
+      <ol class="threat-list">{% for t in families %}{{ row(t) }}{% endfor %}</ol>
+    </section>
+    {% endif %}
+  </div>
+
+  {% include "calendar.njk" %}
+</div>

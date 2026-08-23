@@ -1,0 +1,20 @@
+{% set threats = collections.threats %}
+{% if threats.length %}
+<section class="board reveal" style="--i: 1" aria-labelledby="board-heading">
+  <h2 class="section-label" id="board-heading">Threats in the archive</h2>
+  <ol class="board__list">
+    {% for t in threats | take(6) %}
+    <li class="board__row" data-kind="{{ t.kind }}">
+      <a class="board__link" href="/threats/#{{ t.name | threatId }}">
+        <span class="board__name">{{ t.name }}</span>
+        <span class="board__what">{{ t.context }}</span>
+      </a>
+      <a class="board__week" href="{{ t.lastSeen.url }}" title="{{ t.lastSeen.title }}">wk {{ t.lastSeen.week }}</a>
+    </li>
+    {% endfor %}
+  </ol>
+  <p class="board__foot">
+    <a href="/threats/">All {{ threats.length }} tracked</a> · <a href="/intel/">Live dashboards</a>
+  </p>
+</section>
+{% endif %}

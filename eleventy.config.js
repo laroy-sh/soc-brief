@@ -4,6 +4,9 @@
 import fs from "node:fs";
 import { feedPlugin } from "@11ty/eleventy-plugin-rss";
 import { parseActBy, collapseDeadlines, deadlineStatus } from "./scripts/actby.mjs";
+import { parseThreats, collectThreats } from "./scripts/threats.mjs";
+import { highlightKql, huntingLink } from "./scripts/kql.mjs";
+import { KQL_TABLES, tableDocUrl } from "./scripts/kql-tables.mjs";
 
 // --- Week helpers ---
 function firstMondayOfYear(year) {
@@ -25,36 +28,6 @@ function briefWeekParts(input) {
   return { year, week };
 }
 
-// Known Log Analytics / advanced hunting table names, harvested from the
-// kqlsearch corpus. ponytail: a plain allow-list beats guessing — add a name
-// here if a future query uses a table the tag cloud misses.
-const KQL_TABLES = new Set([
-  "AzureDiagnostics", "AADManagedIdentitySignInLogs", "AADNonInteractiveUserSignInLogs", "AADProvisioningLogs",
-  "AADRiskyUsers", "AADServicePrincipalSignInLogs", "AADSignInEventsBeta", "AADUserRiskEvents",
-  "ADFSSignInLogs", "ADOAuditLogs_CL", "AIAgentsInfo", "ASimDnsActivityLogs", "AgentsInfo",
-  "AlertEvidence", "AppDependencies", "AppEvents", "AuditLogs", "AzureActivity",
-  "AzureDevOpsAuditing", "BehaviorAnalytics", "BehaviorEntities", "CloudAppEvents",
-  "CommonSecurityLog", "CopilotActivity", "CopilotAdminActivity", "DataSecurityBehaviors",
-  "DataSecurityEvents", "DeviceEvents", "DeviceFileCertificateInfo", "DeviceFileEvents",
-  "DeviceImageLoadEvents", "DeviceInfo", "DeviceLogonEvents", "DeviceNetworkEvents",
-  "DeviceNetworkInfo", "DeviceProcessEvents", "DeviceRegistryEvents",
-  "DeviceTvmBrowserExtensions", "DeviceTvmInfoGathering",
-  "DeviceTvmSecureConfigurationAssessment", "DeviceTvmSecureConfigurationAssessmentKB",
-  "DeviceTvmSoftwareInventory", "DeviceTvmSoftwareVulnerabilities",
-  "DeviceTvmSoftwareVulnerabilitiesKB", "EasmRisk_CL", "EasyVista_Assets_CL",
-  "EasyVista_Tickets_CL", "EmailAttachmentInfo", "EmailEvents", "EmailPostDeliveryEvents",
-  "EmailUrlInfo", "EntraIdSignInEvents", "Event", "ExposureGraphEdges", "ExposureGraphNodes",
-  "FileMaliciousContentInfo", "GWSAlerts_CL", "GraphAPIAuditEvents", "Heartbeat",
-  "IdentityDirectoryEvents", "IdentityInfo", "IdentityLogonEvents", "IdentityQueryEvents",
-  "IntuneAuditLogs", "IntuneDeviceComplianceOrg", "IntuneDevices", "IntuneOperationalLogs",
-  "KnowExploitesVulnsCISA", "MessageEvents", "MessageUrlInfo", "MicrosoftGraphActivityLogs",
-  "MicrosoftPurviewInformationProtection", "NetskopeEvents_CL", "NetskopeWebTx_CL",
-  "NetworkAccessTraffic", "OAuthAppInfo", "OfficeActivity", "OpenAIAuditLogs",
-  "OpenAIChatCompletions", "Operation", "Resources", "RiskyServicePrincipals", "SecurityAlert",
-  "SecurityEvent", "SecurityIncident", "SentinelHealth", "ServicePrincipalRiskEvents",
-  "SigninLogs", "StorageBlobLogs", "Syslog", "ThreatIntelIndicators",
-  "ThreatIntelligenceIndicator", "UrlClickEvents", "Usage", "WindowsEvent", "_GetWatchlist",
-]);
 
 // Data tables a query reads: identifiers that head a pipeline, kept only when
 // they are a known table (drops column names and let-variables).
@@ -217,6 +190,8 @@ export default function (eleventyConfig) {
           author: cut === -1 ? "" : label.slice(cut + 3),
           source: l[2],
           kql: m[2],
+          html: highlightKql(m[2], KQL_TABLES),
+          hunt: huntingLink(m[2]),
           tables: kqlTables(m[2]),
           issue: { url: b.url, title: b.data.title, date: b.date },
         });
@@ -258,6 +233,26 @@ export default function (eleventyConfig) {
     return collapseDeadlines(issues);
   });
 
+  // Named threats the issues have covered — the threat board on the home page
+  // and /threats/. Actors come from Microsoft's own naming taxonomy; families
+  // only when the issue says what they are. See scripts/threats.mjs.
+  eleventyConfig.addCollection("threats", (api) => {
+    const issues = api.getFilteredByTag("brief").map((b) => {
+      const { week } = briefWeekParts(new Date(b.date));
+      return {
+        ref: { url: b.url, title: b.data.title, week, date: new Date(b.date).toISOString().slice(0, 10) },
+        items: parseThreats(fs.readFileSync(b.inputPath, "utf8")),
+      };
+    });
+    return collectThreats(issues);
+  });
+
+  eleventyConfig.addFilter("threatId", (name) =>
+    `t-${String(name).toLowerCase().replace(/[^a-z0-9]+/g, "-")}`);
+  eleventyConfig.addFilter("tableDoc", tableDocUrl);
+  eleventyConfig.addFilter("take", (list, n) => list.slice(0, n));
+  eleventyConfig.addFilter("ofKind", (list, kind) => list.filter((t) => t.kind === kind));
+
   // Build a per-year calendar: every Monday issue week in the calendar year,
   // flagged if a brief was published. The first Monday-dated brief in January is
   // week 1, and late-December briefs stay in that calendar year.
@@ -296,6 +291,21 @@ export default function (eleventyConfig) {
         }
         return { year, weeks };
       });
+  });
+
+  // The KQL inside an issue is plain markdown, so it is highlighted on the way
+  // out instead. Same tokenizer, same deep link as /kql/.
+  const UNESCAPE = { "&amp;": "&", "&lt;": "<", "&gt;": ">", "&quot;": '"', "&#39;": "'" };
+  eleventyConfig.addTransform("kqlBlocks", function (content) {
+    if (!(this.page.outputPath || "").includes("/briefs/")) return content;
+    return content.replace(
+      /<pre><code class="language-kql">([\s\S]*?)<\/code><\/pre>/g,
+      (whole, body) => {
+        const kql = body.replace(/&(amp|lt|gt|quot|#39);/g, (e) => UNESCAPE[e]);
+        const hunt = huntingLink(kql);
+        return `<pre${hunt ? ` data-hunt="${hunt}"` : ""}><code class="language-kql">${highlightKql(kql, KQL_TABLES)}</code></pre>`;
+      },
+    );
   });
 
   return {

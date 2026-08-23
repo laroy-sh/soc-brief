@@ -15,9 +15,11 @@ description: "Every KQL hunting query featured in SOC Weekly Brief, newest first
       {% for q in queries %}
       <article class="kql-entry" data-tables="{{ q.tables | join(' ') }}">
         <h2 class="kql-entry__title"><a href="{{ q.source }}" target="_blank" rel="noopener">{{ q.title }}</a></h2>
-        <p class="kql-entry__meta">{{ q.author }} &middot; <a href="{{ q.issue.url }}">Week {{ q.issue.date | isoWeek }} &middot; {{ q.issue.title | navRange }}</a>{% if q.tables.length %} &middot; {{ q.tables | join(", ") }}{% endif %}</p>
+        <p class="kql-entry__meta">{{ q.author }} &middot; <a href="{{ q.issue.url }}">Week {{ q.issue.date | isoWeek }} &middot; {{ q.issue.title | navRange }}</a>{% if q.tables.length %} &middot;
+          {% for t in q.tables %}{% set doc = t | tableDoc %}{% if doc %}<a class="kql-table" href="{{ doc }}" target="_blank" rel="noopener" title="{{ t }} schema on Microsoft Learn">{{ t }}</a>{% else %}<span class="kql-table">{{ t }}</span>{% endif %}{% if not loop.last %}, {% endif %}{% endfor %}
+        {% endif %}</p>
         <p>{{ q.note }}</p>
-        <pre><code class="language-kql">{{ q.kql }}</code></pre>
+        <pre{% if q.hunt %} data-hunt="{{ q.hunt }}"{% endif %}><code class="language-kql">{{ q.html | safe }}</code></pre>
       </article>
       {% endfor %}
     </div>

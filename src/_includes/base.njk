@@ -57,6 +57,7 @@
       <nav class="nav" aria-label="Primary">
         <a href="/">Home</a>
         <a href="/deadlines/">Deadlines</a>
+        <a href="/threats/">Threats</a>
         <a href="/kql/">KQL</a>
         <a href="/intel/">Threat Intel</a>
         <a href="/feed.xml">Feed</a>
@@ -85,6 +86,7 @@
         <nav class="site-foot__nav" aria-label="Footer">
           <a href="/">Home</a>
           <a href="/deadlines/">Deadlines</a>
+          <a href="/threats/">Threats</a>
           <a href="/kql/">KQL</a>
           <a href="/intel/">Threat Intel</a>
           <a href="/feed.xml">Feed</a>
@@ -119,6 +121,16 @@
         copyBtn.innerHTML = '<span>Copy</span>';
         header.appendChild(controls);
         header.appendChild(title);
+        // The query opens in the Defender editor, never auto-run.
+        if (pre.dataset.hunt) {
+          const open = document.createElement("a");
+          open.className = "copy-btn";
+          open.href = pre.dataset.hunt;
+          open.target = "_blank";
+          open.rel = "noopener";
+          open.textContent = "Advanced hunting ↗";
+          header.appendChild(open);
+        }
         header.appendChild(copyBtn);
         pre.insertBefore(header, pre.firstChild);
         copyBtn.addEventListener("click", () => {
