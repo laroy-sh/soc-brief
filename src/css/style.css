@@ -1197,3 +1197,28 @@ a.kql-table:hover { color: var(--cyan); border-bottom-color: var(--cyan-dim); }
   /* The header runs out of room before the copy button does. */
   .terminal-header .copy-btn[href] { display: none; }
 }
+
+/* The search trigger lives at the top of the right column, so it sits with the
+   other ways into the archive rather than competing with the masthead nav. */
+.home-aside .palette-trigger {
+  width: 100%;
+  min-height: 38px;
+  margin: 0 0 26px;
+  padding: 0 10px 0 12px;
+}
+.home-aside .palette-trigger .palette-trigger__label { flex: 1; padding: 0; text-align: left; }
+/* One of the two triggers shows at a time: the column one while the column is
+   beside the issue, the masthead one once it stacks below. */
+.masthead .palette-trigger { display: none; }
+@media (max-width: 860px) {
+  .masthead .palette-trigger { display: inline-flex; width: 100%; }
+  .home-aside .palette-trigger { display: none; }
+}
+/* Topic pages and /intel/ have no right column, so the masthead keeps the
+   trigger there at every width. */
+body:not(:has(.home-aside)) .masthead .palette-trigger { display: inline-flex; }
+/* Beside a full-width nav it has to be compact enough to stay on one row. */
+@media (min-width: 861px) {
+  body:not(:has(.home-aside)) .masthead .palette-trigger__key { display: none; }
+  body:not(:has(.home-aside)) .masthead .palette-trigger__label { padding-right: 0; }
+}

@@ -1,6 +1,7 @@
 <aside class="home-aside">
-  {% include "threatboard.njk" %}
+  {% include "search.njk" %}
   {% include "tagcloud.njk" %}
+  {% include "threatboard.njk" %}
   {% for yr in collections.calendars %}
   <section class="cal-year reveal" style="--i: 1">
     <h2 class="section-label">Browse · {{ yr.year }}</h2>
