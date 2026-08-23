@@ -27,6 +27,7 @@ description: "Every KQL hunting query featured in SOC Weekly Brief, newest first
   </div>
 
   <aside class="home-aside">
+    {% include "search.njk" %}
     <form class="kql-filter" role="search" onsubmit="return false">
       <h2 class="section-label">Search queries</h2>
       <input type="search" class="search__input kql-filter__input" data-kql-search placeholder="mshta, ClickFix, SigninLogs&hellip;" aria-label="Search queries" autocomplete="off">

@@ -7,9 +7,12 @@
 
 import { search, correct, snippet } from "./search.js";
 
-const trigger = document.querySelector("[data-palette-open]");
+// One palette, two triggers: the right column carries it on a wide screen, the
+// masthead on a narrow one where that column stacks below the issue.
+const triggers = [...document.querySelectorAll("[data-palette-open]")];
 const dialog = document.querySelector("[data-palette]");
-if (trigger && dialog) {
+if (triggers.length && dialog) {
+  let opener = triggers[0];
   const input = dialog.querySelector("[data-palette-input]");
   const out = dialog.querySelector("[data-palette-results]");
   const mac = /mac|iphone|ipad/i.test(navigator.platform || navigator.userAgent);
@@ -127,7 +130,9 @@ if (trigger && dialog) {
     (index ? Promise.resolve() : load()).then(render);
   };
 
-  trigger.addEventListener("click", open);
+  for (const t of triggers) {
+    t.addEventListener("click", () => { opener = t; open(); });
+  }
   input.addEventListener("input", () => (index ? render() : load().then(render)));
 
   document.addEventListener("keydown", (e) => {
@@ -157,5 +162,10 @@ if (trigger && dialog) {
   dialog.addEventListener("click", (e) => {
     if (e.target === dialog) dialog.close();
   });
-  dialog.addEventListener("close", () => trigger.focus());
+  // Focus goes back to whichever trigger opened it — or, for the keyboard
+  // shortcut, to the one actually on screen.
+  dialog.addEventListener("close", () => {
+    const visible = triggers.find((t) => t.offsetParent !== null);
+    (visible || opener).focus();
+  });
 }
