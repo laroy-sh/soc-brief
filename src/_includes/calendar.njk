@@ -1,7 +1,6 @@
 <aside class="home-aside">
   {% include "search.njk" %}
   {% include "tagcloud.njk" %}
-  {% include "threatboard.njk" %}
   {% for yr in collections.calendars %}
   <section class="cal-year reveal" style="--i: 1">
     <h2 class="section-label">Browse · {{ yr.year }}</h2>
@@ -19,4 +18,5 @@
   </section>
   {% endfor %}
   <p class="cal-legend"><span class="cal-legend__swatch" aria-hidden="true"></span> Filled weeks are published issues.</p>
+  {% include "threatboard.njk" %}
 </aside>
