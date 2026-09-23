@@ -44,8 +44,11 @@ Dated spine (primary — real dates):
 - Microsoft Entra blog — https://techcommunity.microsoft.com/category/microsoft-entra/blog/microsoft-entra-blog
 - Microsoft Security Blog — https://www.microsoft.com/en-us/security/blog/
 - MSRC blog + Patch Tuesday — https://msrc.microsoft.com/blog/ · https://msrc.microsoft.com/update-guide
-- Azure Updates, security services filter — https://azure.microsoft.com/en-us/updates?filters=%5B%22App+Configuration%22%2C%22Application+Gateway%22%2C%22Azure+Bastion%22%2C%22Azure+confidential+ledger%22%2C%22Azure+DDoS+Protection%22%2C%22Azure+Dedicated+HSM%22%2C%22Azure+Firewall%22%2C%22Azure+Firewall+Manager%22%2C%22Azure+Front+Door%22%2C%22Key+Vault%22%2C%22Microsoft+Copilot+for+Security%22%2C%22Microsoft+Defender+for+Cloud%22%2C%22Microsoft+Entra+Domain+Services%22%2C%22Microsoft+Sentinel%22%2C%22VPN+Gateway%22%2C%22Web+Application+Firewall%22%5D — per-item dates for GA/preview/retirement across the Azure security services (MDC, Sentinel, Key Vault, Firewall, WAF, etc.). If the filtered page renders empty for a plain fetch, fall back to the AzureCharts mirror below.
-- AzureCharts security updates — https://azurecharts.com/updates?category=security — dated mirror of the Azure Updates security category; fetches reliably. Use it to spot items, then cite the Azure Update entry or the Microsoft primary post, not azurecharts.
+- Azure Updates, security services filter — https://azure.microsoft.com/en-us/updates?filters=%5B%22App+Configuration%22%2C%22Application+Gateway%22%2C%22Azure+Bastion%22%2C%22Azure+confidential+ledger%22%2C%22Azure+DDoS+Protection%22%2C%22Azure+Dedicated+HSM%22%2C%22Azure+Firewall%22%2C%22Azure+Firewall+Manager%22%2C%22Azure+Front+Door%22%2C%22Key+Vault%22%2C%22Microsoft+Copilot+for+Security%22%2C%22Microsoft+Defender+for+Cloud%22%2C%22Microsoft+Entra+Domain+Services%22%2C%22Microsoft+Sentinel%22%2C%22VPN+Gateway%22%2C%22Web+Application+Firewall%22%5D — per-item dates for GA/preview/retirement across the Azure security services. As of September 2026 this page renders "0 Updates found" for a plain fetch, and the releasecommunications RSS/API (https://www.microsoft.com/releasecommunications/api/v2/azure/rss) returns an HTML block page. Try it once. If it comes back empty, use the Azure security lane below and don't retry.
+- Azure security lane (replaces the AzureCharts mirror, which moved behind an Entra sign-in in September 2026). These are Tech Community RSS feeds with dated items. Fetch them with curl and read the pubDate values. To get a post's body, the __NEXT_DATA__ JSON on the post page holds the full text:
+  - Defender for Cloud blog — https://techcommunity.microsoft.com/t5/s/gxcuf89792/rss/board?board.id=MicrosoftDefenderCloudBlog
+  - Azure Network Security blog (Firewall, WAF, DDoS, Front Door, App Gateway) — https://techcommunity.microsoft.com/t5/s/gxcuf89792/rss/board?board.id=AzureNetworkSecurityBlog
+  - Pair these with the MDC upcoming-changes and Key Vault what's-new pages under Month-context. Between them they cover the MDC, Key Vault, Firewall and WAF GA, preview and retirement items that used to come from Azure Updates.
 
 Month-context (detail — but sweep these EVERY run, not just when a blog points
 at them; the platform-side services (MDC, Azure networking/database security)
@@ -56,18 +59,20 @@ a Tech Community post. Attach each item to the week its date pins to):
 - MDE what's new — https://learn.microsoft.com/en-us/defender-endpoint/whats-new-in-microsoft-defender-endpoint
 - MDO what's new — https://learn.microsoft.com/en-us/defender-office-365/defender-for-office-365-whats-new
 - MDC release notes — https://learn.microsoft.com/en-us/azure/defender-for-cloud/release-notes
+- MDC upcoming changes — https://learn.microsoft.com/en-us/azure/defender-for-cloud/upcoming-changes (retirement and deprecation dates, the main source for Act by items)
+- Key Vault what's new — https://learn.microsoft.com/en-us/azure/key-vault/general/whats-new
 - Entra what's new — https://learn.microsoft.com/en-us/entra/fundamentals/whats-new
 
 Curated roundup (discovery aid — a dated weekly digest; use it to catch items the
 first-party feeds buried, then cite the Microsoft primary source for each change,
 never the newsletter itself):
-- "THE PROMPT for Microsoft Security" (Rod Trent) — https://rodtrent.substack.com/s/the-prompt-for-microsoft-security (weekly). Moved here from microsoftdefender.substack.com, which stays up temporarily during the transition — check the new home first.
-- Security Blog Search — https://securityblogsearch.com/ (community aggregator of Microsoft-security blog posts across Sentinel/Defender/Entra/Intune/Azure; RSS: https://securityblogsearch.com/feed.xml). Use to catch community coverage; cite the linked original post or the Microsoft primary source, not the aggregator.
+- "THE PROMPT for Microsoft Security" (Rod Trent) — https://rodtrent.substack.com/s/the-prompt-for-microsoft-security (weekly). The section page renders nothing for a plain fetch. Read the RSS feed https://rodtrent.substack.com/feed instead: it covers all of Rod's posts, so filter on the THE PROMPT issues.
+- Security Blog Search — https://securityblogsearch.com/ (community aggregator of Microsoft-security blog posts across Sentinel/Defender/Entra/Intune/Azure; RSS: https://securityblogsearch.com/feed.xml). Use to catch community coverage; cite the linked original post or the Microsoft primary source, not the aggregator. The feed has been stale since 31 July 2026. If its newest item is more than 14 days old, skip it without comment.
 - David Alonso Dominguez (Microsoft, Senior Technical Security Specialist) — Sentinel/Defender XDR content, mostly on LinkedIn (see below). Also machine-fetchable without a token: YouTube Atom feed https://www.youtube.com/feeds/videos.xml?channel_id=UC1IYsYLFOZxQrYD1Be-XIoA (plain XML, no auth).
 - LinkedIn posts (both Rod Trent and David Alonso) — behind an auth wall, plain fetches fail. If MRSCRAPER_API_TOKEN is set, fetch each feed via the MrScraper unblocker (scripts/mrscraper.js, verified working for both):
   `npm run scrape -- "https://www.linkedin.com/in/rodtrent/recent-activity/all/" --format json --prompt "List the most recent posts: date, text, links"`
   `npm run scrape -- "https://www.linkedin.com/in/david-alonso-dominguez/recent-activity/all/" --format json --prompt "List the most recent posts: date, text, links"`
-  If a call errors with auth_wall_desktop_profile, retry once — LinkedIn unblocking occasionally misses on the first attempt. No token → fall back to Rod's Substack and David's YouTube feed. Skip X (https://x.com/Davidal52214920): even unblocked, X shows no posts to logged-out visitors.
+  If a call errors with auth_wall_desktop_profile, retry once — LinkedIn unblocking occasionally misses on the first attempt. No token → skip LinkedIn quietly and use Rod's Substack RSS and David's YouTube feed instead. That is the expected path, so don't report it as a problem. Skip X (https://x.com/Davidal52214920): even unblocked, X shows no posts to logged-out visitors.
 
 KQL queries (detection content — dated, one section per issue):
 - KQL Search — https://www.kqlsearch.com/ — search engine over community + Microsoft
